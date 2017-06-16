@@ -1,4 +1,4 @@
-module TradeCard.Hello exposing (main)
+module TradeCard.Client exposing (main)
 
 
 import Html
