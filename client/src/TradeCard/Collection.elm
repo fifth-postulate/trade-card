@@ -68,6 +68,7 @@ view collection =
         [
           viewCardList (all collection)
         , duplicityList (doubles collection)
+        , viewCardList (missing collection)
         ]
 
 
@@ -108,3 +109,21 @@ doubles collection =
     |> Dict.values
     |> List.filter (\t -> (Tuple.second t) > 1)
     |> List.map (\t -> (Tuple.first t, (Tuple.second t) - 1))
+
+
+missing : Collection -> List Card.Card
+missing collection =
+    collection.range
+    |> uncurry List.range
+    |> List.filter (negate (isCollected collection))
+    |> List.map (\id -> { id = id })
+
+
+isCollected : Collection -> Int -> Bool
+isCollected collection id =
+    Dict.member id collection.collected
+
+
+negate : (a -> Bool) -> a -> Bool
+negate predicate value =
+    not (predicate value)
