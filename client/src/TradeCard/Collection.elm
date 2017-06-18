@@ -1,4 +1,4 @@
-module TradeCard.Collection exposing (Collection, empty, collect, remove, view, CollectError)
+module TradeCard.Collection exposing (Collection, empty, collect, remove, view, doubles, missing, CollectError)
 
 
 import Dict
