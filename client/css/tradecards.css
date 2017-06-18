@@ -1,0 +1,66 @@
+body {
+    --collection-size: 640px;
+    --collection-list-size: calc(var(--collection-size)/4);
+    --collection-card-width: 100px;
+    --collection-card-height: 130px;
+    --collection-card-border-radius: 5px;
+    --collection-card-duplicity-size: 25px;
+    --collection-card-duplicity-rotation: rotate(10deg);
+}
+
+.card.collection {
+    width: var(--collection-size);
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.card.list {
+    width: var(--collection-list-size);
+}
+
+.card.list .card {
+    width: var(--collection-card-width);
+    height: var(--collection-card-height);
+    margin-top: var(--collection-card-border-radius);
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: var(--collection-card-border-radius);
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card.list .card:first-child {
+    margin-top: 0;
+}
+
+.card.list > div {
+    position: relative;
+    margin-top: var(--collection-card-border-radius);
+}
+
+.card.list > div:first-child {
+    margin-top: 0;
+}
+
+.card.list .duplicity {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: var(--collection-card-duplicity-size);
+    height: var(--collection-card-duplicity-size);
+    border-radius: calc(var(--collection-card-duplicity-size)/2);
+    transform: var(--collection-card-duplicity-rotation);
+    background-color: red;
+    color: black;
+    position: absolute;
+    top: calc(2*var(--collection-card-border-radius));
+    left: 60%;
+}
