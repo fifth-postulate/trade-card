@@ -14,7 +14,10 @@ collection =
                (Collection.empty 1 15)
             |> Ok
             |> Result.andThen (Collection.collect { id = 4 })
+            |> Result.andThen (Collection.collect { id = 4 })
+            |> Result.andThen (Collection.collect { id = 4 })
             |> Result.andThen (Collection.collect { id = 7 })
+            |> Result.andThen (Collection.collect { id = 11 })
             |> Result.andThen (Collection.collect { id = 11 })
             |> Result.andThen (Collection.collect { id = 13 })
     in
