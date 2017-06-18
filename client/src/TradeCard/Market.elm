@@ -24,7 +24,7 @@ trade collectionA collectionB =
         missingB =
             Collection.missing collectionB
     in
-    (intersect missingA doublesB, intersect missingA doublesB )
+    (intersect missingA doublesB, intersect missingB doublesA )
 
 
 intersect : List Card.Card -> List Card.Card -> List Card.Card
