@@ -18,9 +18,9 @@ collection =
             |> Result.andThen (Collection.collect { id = 11 })
             |> Result.andThen (Collection.collect { id = 13 })
     in
-        (case result of
+        case result of
             Ok c->
-             c
+                c
 
             Err _ ->
-             Collection.empty 1 15)
+                Collection.empty 1 15
