@@ -79,6 +79,14 @@ viewCardList cards =
 
 all : Collection -> List Card.Card
 all collection =
-    collection.collected |>
-    Dict.values  |>
-    (List.map Tuple.first)
+    collection.collected
+    |> Dict.values
+    |> (List.map Tuple.first)
+
+
+doubles : Collection -> List (Card.Card, Int)
+doubles collection =
+    collection.collected
+    |> Dict.values
+    |> List.filter (\t -> (Tuple.second t) > 1)
+    |> List.map (\t -> (Tuple.first t, (Tuple.second t) - 1))
