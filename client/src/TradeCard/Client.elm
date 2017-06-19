@@ -1,71 +1,74 @@
 module TradeCard.Client exposing (main)
 
 import Html
-import TradeCard.Card as Card
 import TradeCard.Collection as Collection
 import TradeCard.View as View
-import TradeCard.Market as Market
 
 
-main : Html.Html msg
+main : Program Never Model Message
 main =
+    Html.program
+        {
+          init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        }
+
+
+init : (Model, Cmd msg)
+init =
     let
-        trade = Market.trade collectionA collectionB
+        collection : Collection.Collection
+        collection =
+            let
+                result : Result Collection.CollectError Collection.Collection
+                result =
+                    (Collection.empty 1 15)
+                        |> Ok
+                        |> Result.andThen (Collection.collect { id = 4 })
+                        |> Result.andThen (Collection.collect { id = 4 })
+                        |> Result.andThen (Collection.collect { id = 4 })
+                        |> Result.andThen (Collection.collect { id = 7 })
+                        |> Result.andThen (Collection.collect { id = 11 })
+                        |> Result.andThen (Collection.collect { id = 11 })
+                        |> Result.andThen (Collection.collect { id = 13 })
+                        |> Result.andThen (Collection.collect { id = 13 })
+            in
+                case result of
+                    Ok c->
+                        c
 
-        aCards = Tuple.first trade
-
-        bCards = Tuple.second trade
+                    Err _ ->
+                        Collection.empty 1 15
     in
-        Html.div
-            []
-            (List.concat
-                 [
-                   [ View.collectionView collectionA ]
-                 , (List.map Card.view aCards)
-                 , (List.map Card.view bCards)
-                 ])
+        ({ collection = collection }, Cmd.none)
 
 
-collectionA : Collection.Collection
-collectionA =
-    let
-        result : Result Collection.CollectError Collection.Collection
-        result =
-               (Collection.empty 1 15)
-            |> Ok
-            |> Result.andThen (Collection.collect { id = 4 })
-            |> Result.andThen (Collection.collect { id = 4 })
-            |> Result.andThen (Collection.collect { id = 4 })
-            |> Result.andThen (Collection.collect { id = 7 })
-            |> Result.andThen (Collection.collect { id = 11 })
-            |> Result.andThen (Collection.collect { id = 11 })
-            |> Result.andThen (Collection.collect { id = 13 })
-            |> Result.andThen (Collection.collect { id = 13 })
-    in
-        case result of
-            Ok c->
-                c
-
-            Err _ ->
-                Collection.empty 1 15
+type alias Model =
+    {
+        collection: Collection.Collection
+    }
 
 
-collectionB : Collection.Collection
-collectionB =
-    let
-        result : Result Collection.CollectError Collection.Collection
-        result =
-               (Collection.empty 1 15)
-            |> Ok
-            |> Result.andThen (Collection.collect { id = 2 })
-            |> Result.andThen (Collection.collect { id = 2 })
-            |> Result.andThen (Collection.collect { id = 7 })
-            |> Result.andThen (Collection.collect { id = 12 })
-            |> Result.andThen (Collection.collect { id = 12 })
-    in
-        case result of
-            Ok c->
-                c
+type Message =
+    DoNothing
 
-            Err _ ->
-                Collection.empty 1 15
+
+update : Message -> Model -> (Model, Cmd Message)
+update _ model =
+    (model, Cmd.none)
+
+
+view : Model -> Html.Html Message
+view model =
+    Html.div
+        []
+        (List.concat
+             [
+              [ View.collectionView model.collection ]
+             ])
+
+
+subscriptions : Model -> Sub Message
+subscriptions _ = Sub.none

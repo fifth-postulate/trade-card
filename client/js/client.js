@@ -8392,73 +8392,38 @@ var _fifth_postulate$trade_card$TradeCard_View$collectionView = function (collec
 		});
 };
 
-var _fifth_postulate$trade_card$TradeCard_Market$intersect = F2(
-	function (a, b) {
-		var containedInA = A2(_elm_lang$core$Basics$flip, _elm_lang$core$List$member, a);
-		return A2(_elm_lang$core$List$filter, containedInA, b);
+var _fifth_postulate$trade_card$TradeCard_Client$subscriptions = function (_p0) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		_elm_lang$core$List$concat(
+			{
+				ctor: '::',
+				_0: {
+					ctor: '::',
+					_0: _fifth_postulate$trade_card$TradeCard_View$collectionView(model.collection),
+					_1: {ctor: '[]'}
+				},
+				_1: {ctor: '[]'}
+			}));
+};
+var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
+	function (_p1, model) {
+		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
-var _fifth_postulate$trade_card$TradeCard_Market$trade = F2(
-	function (collectionA, collectionB) {
-		var missingB = _fifth_postulate$trade_card$TradeCard_Collection$missing(collectionB);
-		var doublesB = A2(
-			_elm_lang$core$List$map,
-			_elm_lang$core$Tuple$first,
-			_fifth_postulate$trade_card$TradeCard_Collection$doubles(collectionB));
-		var missingA = _fifth_postulate$trade_card$TradeCard_Collection$missing(collectionA);
-		var doublesA = A2(
-			_elm_lang$core$List$map,
-			_elm_lang$core$Tuple$first,
-			_fifth_postulate$trade_card$TradeCard_Collection$doubles(collectionA));
-		return {
-			ctor: '_Tuple2',
-			_0: A2(_fifth_postulate$trade_card$TradeCard_Market$intersect, missingA, doublesB),
-			_1: A2(_fifth_postulate$trade_card$TradeCard_Market$intersect, missingB, doublesA)
-		};
-	});
-
-var _fifth_postulate$trade_card$TradeCard_Client$collectionB = function () {
-	var result = A2(
-		_elm_lang$core$Result$andThen,
-		_fifth_postulate$trade_card$TradeCard_Collection$collect(
-			{id: 12}),
-		A2(
-			_elm_lang$core$Result$andThen,
-			_fifth_postulate$trade_card$TradeCard_Collection$collect(
-				{id: 12}),
-			A2(
-				_elm_lang$core$Result$andThen,
-				_fifth_postulate$trade_card$TradeCard_Collection$collect(
-					{id: 7}),
-				A2(
-					_elm_lang$core$Result$andThen,
-					_fifth_postulate$trade_card$TradeCard_Collection$collect(
-						{id: 2}),
-					A2(
-						_elm_lang$core$Result$andThen,
-						_fifth_postulate$trade_card$TradeCard_Collection$collect(
-							{id: 2}),
-						_elm_lang$core$Result$Ok(
-							A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15)))))));
-	var _p0 = result;
-	if (_p0.ctor === 'Ok') {
-		return _p0._0;
-	} else {
-		return A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15);
-	}
-}();
-var _fifth_postulate$trade_card$TradeCard_Client$collectionA = function () {
-	var result = A2(
-		_elm_lang$core$Result$andThen,
-		_fifth_postulate$trade_card$TradeCard_Collection$collect(
-			{id: 13}),
-		A2(
+var _fifth_postulate$trade_card$TradeCard_Client$init = function () {
+	var collection = function () {
+		var result = A2(
 			_elm_lang$core$Result$andThen,
 			_fifth_postulate$trade_card$TradeCard_Collection$collect(
 				{id: 13}),
 			A2(
 				_elm_lang$core$Result$andThen,
 				_fifth_postulate$trade_card$TradeCard_Collection$collect(
-					{id: 11}),
+					{id: 13}),
 				A2(
 					_elm_lang$core$Result$andThen,
 					_fifth_postulate$trade_card$TradeCard_Collection$collect(
@@ -8466,11 +8431,11 @@ var _fifth_postulate$trade_card$TradeCard_Client$collectionA = function () {
 					A2(
 						_elm_lang$core$Result$andThen,
 						_fifth_postulate$trade_card$TradeCard_Collection$collect(
-							{id: 7}),
+							{id: 11}),
 						A2(
 							_elm_lang$core$Result$andThen,
 							_fifth_postulate$trade_card$TradeCard_Collection$collect(
-								{id: 4}),
+								{id: 7}),
 							A2(
 								_elm_lang$core$Result$andThen,
 								_fifth_postulate$trade_card$TradeCard_Collection$collect(
@@ -8479,42 +8444,31 @@ var _fifth_postulate$trade_card$TradeCard_Client$collectionA = function () {
 									_elm_lang$core$Result$andThen,
 									_fifth_postulate$trade_card$TradeCard_Collection$collect(
 										{id: 4}),
-									_elm_lang$core$Result$Ok(
-										A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15))))))))));
-	var _p1 = result;
-	if (_p1.ctor === 'Ok') {
-		return _p1._0;
-	} else {
-		return A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15);
-	}
+									A2(
+										_elm_lang$core$Result$andThen,
+										_fifth_postulate$trade_card$TradeCard_Collection$collect(
+											{id: 4}),
+										_elm_lang$core$Result$Ok(
+											A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15))))))))));
+		var _p2 = result;
+		if (_p2.ctor === 'Ok') {
+			return _p2._0;
+		} else {
+			return A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15);
+		}
+	}();
+	return {
+		ctor: '_Tuple2',
+		_0: {collection: collection},
+		_1: _elm_lang$core$Platform_Cmd$none
+	};
 }();
-var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$virtual_dom$Native_VirtualDom.staticProgram(
-	function () {
-		var trade = A2(_fifth_postulate$trade_card$TradeCard_Market$trade, _fifth_postulate$trade_card$TradeCard_Client$collectionA, _fifth_postulate$trade_card$TradeCard_Client$collectionB);
-		var aCards = _elm_lang$core$Tuple$first(trade);
-		var bCards = _elm_lang$core$Tuple$second(trade);
-		return A2(
-			_elm_lang$html$Html$div,
-			{ctor: '[]'},
-			_elm_lang$core$List$concat(
-				{
-					ctor: '::',
-					_0: {
-						ctor: '::',
-						_0: _fifth_postulate$trade_card$TradeCard_View$collectionView(_fifth_postulate$trade_card$TradeCard_Client$collectionA),
-						_1: {ctor: '[]'}
-					},
-					_1: {
-						ctor: '::',
-						_0: A2(_elm_lang$core$List$map, _fifth_postulate$trade_card$TradeCard_Card$view, aCards),
-						_1: {
-							ctor: '::',
-							_0: A2(_elm_lang$core$List$map, _fifth_postulate$trade_card$TradeCard_Card$view, bCards),
-							_1: {ctor: '[]'}
-						}
-					}
-				}));
-	}());
+var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$html$Html$program(
+	{init: _fifth_postulate$trade_card$TradeCard_Client$init, update: _fifth_postulate$trade_card$TradeCard_Client$update, view: _fifth_postulate$trade_card$TradeCard_Client$view, subscriptions: _fifth_postulate$trade_card$TradeCard_Client$subscriptions})();
+var _fifth_postulate$trade_card$TradeCard_Client$Model = function (a) {
+	return {collection: a};
+};
+var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
 
 var Elm = {};
 Elm['TradeCard'] = Elm['TradeCard'] || {};
