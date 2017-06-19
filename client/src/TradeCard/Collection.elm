@@ -1,9 +1,7 @@
-module TradeCard.Collection exposing (Collection, empty, collect, remove, view, doubles, missing, CollectError)
+module TradeCard.Collection exposing (Collection, empty, collect, remove, collected, doubles, missing, CollectError)
 
 
 import Dict
-import Html
-import Html.Attributes as Attribute
 import TradeCard.Card as Card
 
 
@@ -61,43 +59,8 @@ remove card collection =
         { collection | collected = newlyCollected }
 
 
-view : Collection -> Html.Html msg
-view collection =
-    Html.div
-        [ Attribute.class "card collection" ]
-        [
-          viewCardList (all collection)
-        , duplicityList (doubles collection)
-        , viewCardList (missing collection)
-        ]
-
-
-viewCardList : List Card.Card -> Html.Html msg
-viewCardList cards =
-    Html.div
-        [ Attribute.class "card list" ]
-        (List.map Card.view cards)
-
-
-duplicityList : List (Card.Card, Int) -> Html.Html msg
-duplicityList doubles =
-    Html.div
-        [ Attribute.class "card duplicity list"]
-        (List.map doublicityView doubles)
-
-
-doublicityView : (Card.Card, Int) -> Html.Html msg
-doublicityView (card, duplicity) =
-    Html.div
-        []
-        [
-          Card.view card
-        , Html.span [ Attribute.class "duplicity" ] [ Html.text (toString duplicity) ]
-        ]
-
-
-all : Collection -> List Card.Card
-all collection =
+collected : Collection -> List Card.Card
+collected collection =
     collection.collected
     |> Dict.values
     |> (List.map Tuple.first)

@@ -3,7 +3,9 @@ module TradeCard.Client exposing (main)
 import Html
 import TradeCard.Card as Card
 import TradeCard.Collection as Collection
+import TradeCard.View as View
 import TradeCard.Market as Market
+
 
 main : Html.Html msg
 main =
@@ -18,7 +20,7 @@ main =
             []
             (List.concat
                  [
-                  [ Collection.view collectionA ]
+                   [ View.collectionView collectionA ]
                  , (List.map Card.view aCards)
                  , (List.map Card.view bCards)
                  ])

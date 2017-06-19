@@ -8249,83 +8249,11 @@ var _fifth_postulate$trade_card$TradeCard_Collection$doubles = function (collect
 			},
 			_elm_lang$core$Dict$values(collection.collected)));
 };
-var _fifth_postulate$trade_card$TradeCard_Collection$all = function (collection) {
+var _fifth_postulate$trade_card$TradeCard_Collection$collected = function (collection) {
 	return A2(
 		_elm_lang$core$List$map,
 		_elm_lang$core$Tuple$first,
 		_elm_lang$core$Dict$values(collection.collected));
-};
-var _fifth_postulate$trade_card$TradeCard_Collection$doublicityView = function (_p0) {
-	var _p1 = _p0;
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _fifth_postulate$trade_card$TradeCard_Card$view(_p1._0),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$span,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('duplicity'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							_elm_lang$core$Basics$toString(_p1._1)),
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			}
-		});
-};
-var _fifth_postulate$trade_card$TradeCard_Collection$duplicityList = function (doubles) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('card duplicity list'),
-			_1: {ctor: '[]'}
-		},
-		A2(_elm_lang$core$List$map, _fifth_postulate$trade_card$TradeCard_Collection$doublicityView, doubles));
-};
-var _fifth_postulate$trade_card$TradeCard_Collection$viewCardList = function (cards) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('card list'),
-			_1: {ctor: '[]'}
-		},
-		A2(_elm_lang$core$List$map, _fifth_postulate$trade_card$TradeCard_Card$view, cards));
-};
-var _fifth_postulate$trade_card$TradeCard_Collection$view = function (collection) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('card collection'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: _fifth_postulate$trade_card$TradeCard_Collection$viewCardList(
-				_fifth_postulate$trade_card$TradeCard_Collection$all(collection)),
-			_1: {
-				ctor: '::',
-				_0: _fifth_postulate$trade_card$TradeCard_Collection$duplicityList(
-					_fifth_postulate$trade_card$TradeCard_Collection$doubles(collection)),
-				_1: {
-					ctor: '::',
-					_0: _fifth_postulate$trade_card$TradeCard_Collection$viewCardList(
-						_fifth_postulate$trade_card$TradeCard_Collection$missing(collection)),
-					_1: {ctor: '[]'}
-				}
-			}
-		});
 };
 var _fifth_postulate$trade_card$TradeCard_Collection$remove = F2(
 	function (card, collection) {
@@ -8363,12 +8291,12 @@ var _fifth_postulate$trade_card$TradeCard_Collection$collect = F2(
 			id,
 			_elm_lang$core$Tuple$second(range)) < 1);
 		if (idInRange) {
-			var _p2 = A2(_elm_lang$core$Dict$get, id, collection.collected);
-			if (_p2.ctor === 'Just') {
+			var _p0 = A2(_elm_lang$core$Dict$get, id, collection.collected);
+			if (_p0.ctor === 'Just') {
 				var newlyCollected = A3(
 					_elm_lang$core$Dict$insert,
 					id,
-					{ctor: '_Tuple2', _0: _p2._0._0, _1: _p2._0._1 + 1},
+					{ctor: '_Tuple2', _0: _p0._0._0, _1: _p0._0._1 + 1},
 					collection.collected);
 				return _elm_lang$core$Result$Ok(
 					_elm_lang$core$Native_Utils.update(
@@ -8390,6 +8318,79 @@ var _fifth_postulate$trade_card$TradeCard_Collection$collect = F2(
 				A2(_fifth_postulate$trade_card$TradeCard_Collection$OutsideRange, range, id));
 		}
 	});
+
+var _fifth_postulate$trade_card$TradeCard_View$doublicityView = function (_p0) {
+	var _p1 = _p0;
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _fifth_postulate$trade_card$TradeCard_Card$view(_p1._0),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$span,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('duplicity'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							_elm_lang$core$Basics$toString(_p1._1)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _fifth_postulate$trade_card$TradeCard_View$duplicityList = function (doubles) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('card duplicity list'),
+			_1: {ctor: '[]'}
+		},
+		A2(_elm_lang$core$List$map, _fifth_postulate$trade_card$TradeCard_View$doublicityView, doubles));
+};
+var _fifth_postulate$trade_card$TradeCard_View$viewCardList = function (cards) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('card list'),
+			_1: {ctor: '[]'}
+		},
+		A2(_elm_lang$core$List$map, _fifth_postulate$trade_card$TradeCard_Card$view, cards));
+};
+var _fifth_postulate$trade_card$TradeCard_View$collectionView = function (collection) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('card collection'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _fifth_postulate$trade_card$TradeCard_View$viewCardList(
+				_fifth_postulate$trade_card$TradeCard_Collection$collected(collection)),
+			_1: {
+				ctor: '::',
+				_0: _fifth_postulate$trade_card$TradeCard_View$duplicityList(
+					_fifth_postulate$trade_card$TradeCard_Collection$doubles(collection)),
+				_1: {
+					ctor: '::',
+					_0: _fifth_postulate$trade_card$TradeCard_View$viewCardList(
+						_fifth_postulate$trade_card$TradeCard_Collection$missing(collection)),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
 
 var _fifth_postulate$trade_card$TradeCard_Market$intersect = F2(
 	function (a, b) {
@@ -8500,7 +8501,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$virtual_dom$Na
 					ctor: '::',
 					_0: {
 						ctor: '::',
-						_0: _fifth_postulate$trade_card$TradeCard_Collection$view(_fifth_postulate$trade_card$TradeCard_Client$collectionA),
+						_0: _fifth_postulate$trade_card$TradeCard_View$collectionView(_fifth_postulate$trade_card$TradeCard_Client$collectionA),
 						_1: {ctor: '[]'}
 					},
 					_1: {
