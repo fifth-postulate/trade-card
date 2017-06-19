@@ -8,13 +8,23 @@ body {
     --collection-card-duplicity-rotation: rotate(10deg);
 }
 
-.card.collection {
+h1 { text-align: center; }
+
+.card.collection, .collector {
     width: var(--collection-size);
     margin-left: auto;
     margin-right: auto;
     display: flex;
     flex-direction: row;
+}
+
+.card.collection {
     justify-content: space-around;
+}
+
+.collector {
+    margin-bottom: var(--collection-card-border-radius);
+    justify-content: center;
 }
 
 .card.list {

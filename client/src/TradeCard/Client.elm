@@ -85,7 +85,7 @@ view model =
             []
             [
               Html.div
-                  []
+                  [ Attribute.class "collector"]
                   [
                     Html.input
                        [
