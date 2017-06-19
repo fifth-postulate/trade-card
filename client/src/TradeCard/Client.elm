@@ -75,21 +75,31 @@ update message model =
 
 view : Model -> Html.Html Message
 view model =
-    Html.div
-        []
-        (List.concat
-             [
-              [
-                Html.div
-                    []
-                    [
-                      Html.input [ Attribute.type_ "input", Event.onInput CardId ] []
-                    , Html.button [ Event.onClick Collect ] [ Html.text "collect" ]
-                    ]
-              ]
-             ,[ View.collectionView model.collection ]
-             ])
-
+    let
+        inputValue =
+            model.cardId
+            |> Maybe.map toString
+            |> Maybe.withDefault ""
+    in
+        Html.div
+            []
+            (List.concat
+                 [
+                  [
+                   Html.div
+                       []
+                       [
+                        Html.input
+                            [
+                             Attribute.type_ "input"
+                            , Attribute.value inputValue
+                            , Event.onInput CardId
+                            ] []
+                       , Html.button [ Event.onClick Collect ] [ Html.text "collect" ]
+                       ]
+                  ]
+                 ,[ View.collectionView model.collection ]
+                 ])
 
 subscriptions : Model -> Sub Message
 subscriptions _ = Sub.none
