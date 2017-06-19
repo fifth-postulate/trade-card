@@ -83,23 +83,21 @@ view model =
     in
         Html.div
             []
-            (List.concat
-                 [
+            [
+              Html.div
+                  []
                   [
-                   Html.div
-                       []
+                    Html.input
                        [
-                        Html.input
-                            [
-                             Attribute.type_ "input"
-                            , Attribute.value inputValue
-                            , Event.onInput CardId
-                            ] []
-                       , Html.button [ Event.onClick Collect ] [ Html.text "collect" ]
-                       ]
+                         Attribute.type_ "input"
+                       , Attribute.value inputValue
+                       , Event.onInput CardId
+                       ] []
+                  , Html.button [ Event.onClick Collect ] [ Html.text "collect" ]
                   ]
-                 ,[ View.collectionView model.collection ]
-                 ])
+            , View.collectionView model.collection
+            ]
+
 
 subscriptions : Model -> Sub Message
 subscriptions _ = Sub.none
