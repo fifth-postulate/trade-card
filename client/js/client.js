@@ -8145,6 +8145,121 @@ var _elm_lang$html$Html_Attributes$classList = function (list) {
 };
 var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
 
+var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$html$Html_Events$targetChecked = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'checked',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$bool);
+var _elm_lang$html$Html_Events$targetValue = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'value',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$string);
+var _elm_lang$html$Html_Events$defaultOptions = _elm_lang$virtual_dom$VirtualDom$defaultOptions;
+var _elm_lang$html$Html_Events$onWithOptions = _elm_lang$virtual_dom$VirtualDom$onWithOptions;
+var _elm_lang$html$Html_Events$on = _elm_lang$virtual_dom$VirtualDom$on;
+var _elm_lang$html$Html_Events$onFocus = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'focus',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onBlur = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'blur',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onSubmitOptions = _elm_lang$core$Native_Utils.update(
+	_elm_lang$html$Html_Events$defaultOptions,
+	{preventDefault: true});
+var _elm_lang$html$Html_Events$onSubmit = function (msg) {
+	return A3(
+		_elm_lang$html$Html_Events$onWithOptions,
+		'submit',
+		_elm_lang$html$Html_Events$onSubmitOptions,
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onCheck = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'change',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetChecked));
+};
+var _elm_lang$html$Html_Events$onInput = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'input',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetValue));
+};
+var _elm_lang$html$Html_Events$onMouseOut = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseout',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseOver = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseover',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseLeave = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseleave',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseEnter = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseenter',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseUp = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseup',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseDown = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mousedown',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onDoubleClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'dblclick',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'click',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$Options = F2(
+	function (a, b) {
+		return {stopPropagation: a, preventDefault: b};
+	});
+
 var _fifth_postulate$trade_card$TradeCard_Card$leftPad = F3(
 	function (original, target, padding) {
 		leftPad:
@@ -8395,6 +8510,65 @@ var _fifth_postulate$trade_card$TradeCard_View$collectionView = function (collec
 var _fifth_postulate$trade_card$TradeCard_Client$subscriptions = function (_p0) {
 	return _elm_lang$core$Platform_Sub$none;
 };
+var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
+	function (message, model) {
+		var _p1 = message;
+		switch (_p1.ctor) {
+			case 'DoNothing':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'CardId':
+				var id = _elm_lang$core$String$toInt(_p1._0);
+				var _p2 = id;
+				if (_p2.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								cardId: _elm_lang$core$Maybe$Just(_p2._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			default:
+				var _p3 = model.cardId;
+				if (_p3.ctor === 'Just') {
+					var card = {id: _p3._0};
+					var _p4 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, card, model.collection);
+					if (_p4.ctor === 'Ok') {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{collection: _p4._0, cardId: _elm_lang$core$Maybe$Nothing}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					} else {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					}
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+		}
+	});
+var _fifth_postulate$trade_card$TradeCard_Client$init = {
+	ctor: '_Tuple2',
+	_0: {
+		cardId: _elm_lang$core$Maybe$Nothing,
+		collection: A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15)
+	},
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+var _fifth_postulate$trade_card$TradeCard_Client$Model = F2(
+	function (a, b) {
+		return {cardId: a, collection: b};
+	});
+var _fifth_postulate$trade_card$TradeCard_Client$Collect = {ctor: 'Collect'};
+var _fifth_postulate$trade_card$TradeCard_Client$CardId = function (a) {
+	return {ctor: 'CardId', _0: a};
+};
 var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -8404,70 +8578,55 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 				ctor: '::',
 				_0: {
 					ctor: '::',
-					_0: _fifth_postulate$trade_card$TradeCard_View$collectionView(model.collection),
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$input,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$type_('input'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onInput(_fifth_postulate$trade_card$TradeCard_Client$CardId),
+										_1: {ctor: '[]'}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$button,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(_fifth_postulate$trade_card$TradeCard_Client$Collect),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('collect'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}),
 					_1: {ctor: '[]'}
 				},
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '::',
+						_0: _fifth_postulate$trade_card$TradeCard_View$collectionView(model.collection),
+						_1: {ctor: '[]'}
+					},
+					_1: {ctor: '[]'}
+				}
 			}));
 };
-var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
-	function (_p1, model) {
-		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-	});
-var _fifth_postulate$trade_card$TradeCard_Client$init = function () {
-	var collection = function () {
-		var result = A2(
-			_elm_lang$core$Result$andThen,
-			_fifth_postulate$trade_card$TradeCard_Collection$collect(
-				{id: 13}),
-			A2(
-				_elm_lang$core$Result$andThen,
-				_fifth_postulate$trade_card$TradeCard_Collection$collect(
-					{id: 13}),
-				A2(
-					_elm_lang$core$Result$andThen,
-					_fifth_postulate$trade_card$TradeCard_Collection$collect(
-						{id: 11}),
-					A2(
-						_elm_lang$core$Result$andThen,
-						_fifth_postulate$trade_card$TradeCard_Collection$collect(
-							{id: 11}),
-						A2(
-							_elm_lang$core$Result$andThen,
-							_fifth_postulate$trade_card$TradeCard_Collection$collect(
-								{id: 7}),
-							A2(
-								_elm_lang$core$Result$andThen,
-								_fifth_postulate$trade_card$TradeCard_Collection$collect(
-									{id: 4}),
-								A2(
-									_elm_lang$core$Result$andThen,
-									_fifth_postulate$trade_card$TradeCard_Collection$collect(
-										{id: 4}),
-									A2(
-										_elm_lang$core$Result$andThen,
-										_fifth_postulate$trade_card$TradeCard_Collection$collect(
-											{id: 4}),
-										_elm_lang$core$Result$Ok(
-											A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15))))))))));
-		var _p2 = result;
-		if (_p2.ctor === 'Ok') {
-			return _p2._0;
-		} else {
-			return A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15);
-		}
-	}();
-	return {
-		ctor: '_Tuple2',
-		_0: {collection: collection},
-		_1: _elm_lang$core$Platform_Cmd$none
-	};
-}();
 var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$html$Html$program(
 	{init: _fifth_postulate$trade_card$TradeCard_Client$init, update: _fifth_postulate$trade_card$TradeCard_Client$update, view: _fifth_postulate$trade_card$TradeCard_Client$view, subscriptions: _fifth_postulate$trade_card$TradeCard_Client$subscriptions})();
-var _fifth_postulate$trade_card$TradeCard_Client$Model = function (a) {
-	return {collection: a};
-};
 var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
 
 var Elm = {};

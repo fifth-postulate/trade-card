@@ -1,6 +1,9 @@
 module TradeCard.Client exposing (main)
 
 import Html
+import Html.Attributes as Attribute
+import Html.Events as Event
+import TradeCard.Card as Card
 import TradeCard.Collection as Collection
 import TradeCard.View as View
 
@@ -18,46 +21,56 @@ main =
 
 init : (Model, Cmd msg)
 init =
-    let
-        collection : Collection.Collection
-        collection =
-            let
-                result : Result Collection.CollectError Collection.Collection
-                result =
-                    (Collection.empty 1 15)
-                        |> Ok
-                        |> Result.andThen (Collection.collect { id = 4 })
-                        |> Result.andThen (Collection.collect { id = 4 })
-                        |> Result.andThen (Collection.collect { id = 4 })
-                        |> Result.andThen (Collection.collect { id = 7 })
-                        |> Result.andThen (Collection.collect { id = 11 })
-                        |> Result.andThen (Collection.collect { id = 11 })
-                        |> Result.andThen (Collection.collect { id = 13 })
-                        |> Result.andThen (Collection.collect { id = 13 })
-            in
-                case result of
-                    Ok c->
-                        c
-
-                    Err _ ->
-                        Collection.empty 1 15
-    in
-        ({ collection = collection }, Cmd.none)
+    ({ cardId = Nothing, collection = Collection.empty 1 15 } , Cmd.none)
 
 
 type alias Model =
     {
-        collection: Collection.Collection
+      cardId: Maybe Int
+    , collection: Collection.Collection
     }
 
 
 type Message =
-    DoNothing
+      DoNothing
+    | CardId String
+    | Collect
 
 
 update : Message -> Model -> (Model, Cmd Message)
-update _ model =
-    (model, Cmd.none)
+update message model =
+    case message of
+        DoNothing ->
+            (model, Cmd.none)
+
+        CardId representation ->
+            let
+                id = String.toInt representation
+            in
+                case id of
+                    Ok cardId ->
+                        ({ model | cardId = Just cardId }, Cmd.none)
+
+                    Err _ ->
+                        (model, Cmd.none)
+
+        Collect ->
+            case model.cardId of
+                Just id  ->
+
+                    let
+                        card : Card.Card
+                        card = { id = id }
+                    in
+                        case Collection.collect card model.collection of
+                            Ok nextCollection ->
+                                ({ model | collection = nextCollection, cardId = Nothing }, Cmd.none)
+
+                            Err _ ->
+                                (model, Cmd.none)
+
+                Nothing ->
+                    (model, Cmd.none)
 
 
 view : Model -> Html.Html Message
@@ -66,7 +79,15 @@ view model =
         []
         (List.concat
              [
-              [ View.collectionView model.collection ]
+              [
+                Html.div
+                    []
+                    [
+                      Html.input [ Attribute.type_ "input", Event.onInput CardId ] []
+                    , Html.button [ Event.onClick Collect ] [ Html.text "collect" ]
+                    ]
+              ]
+             ,[ View.collectionView model.collection ]
              ])
 
 

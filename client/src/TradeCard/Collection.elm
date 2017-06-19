@@ -11,6 +11,7 @@ type alias Collection =
     , collected: Dict.Dict Int (Card.Card, Int)
     }
 
+
 empty : Int -> Int -> Collection
 empty low high =
     {
@@ -43,7 +44,7 @@ collect card collection =
                     in
                         Ok { collection | collected = newlyCollected }
         else
-            (Err (OutsideRange range id))
+            Err (OutsideRange range id)
 
 
 type CollectError =
