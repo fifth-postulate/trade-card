@@ -3,6 +3,7 @@ module TradeCard.Card exposing (Card, view)
 
 import Html
 import Html.Attributes as Attribute
+import Html.Events as Event
 
 
 type alias Card =
@@ -11,8 +12,8 @@ type alias Card =
     }
 
 
-view : Card -> Html.Html msg
-view card =
+view : (Card -> msg) -> Card -> Html.Html msg
+view message card =
     let
         cardId : String
         cardId = "card-" ++ (toString card.id)
@@ -20,7 +21,7 @@ view card =
         Html.div
             [ Attribute.classList [ ("card", True), (cardId, True) ] ]
             [
-              Html.span [] [ Html.text (cardFace card) ]
+              Html.span [ Event.onClick (message card) ] [ Html.text (cardFace card) ]
             ]
 
 

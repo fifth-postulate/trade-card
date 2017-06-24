@@ -80,6 +80,9 @@ view model =
             model.cardId
             |> Maybe.map toString
             |> Maybe.withDefault ""
+
+        doNothing =
+            \c -> DoNothing
     in
         Html.div
             []
@@ -95,7 +98,7 @@ view model =
                        ] []
                   , Html.button [ Event.onClick Collect ] [ Html.text "collect" ]
                   ]
-            , View.collectionView model.collection
+            , View.collectionView doNothing doNothing doNothing model.collection
             ]
 
 
