@@ -33,8 +33,8 @@ type alias Model =
 
 type Message =
       DoNothing
-    | CardId String
-    | Collect
+    | UpdateCardId String
+    | AddToCollection
 
 
 update : Message -> Model -> (Model, Cmd Message)
@@ -43,7 +43,7 @@ update message model =
         DoNothing ->
             (model, Cmd.none)
 
-        CardId representation ->
+        UpdateCardId representation ->
             let
                 id = String.toInt representation
             in
@@ -54,7 +54,7 @@ update message model =
                     Err _ ->
                         (model, Cmd.none)
 
-        Collect ->
+        AddToCollection ->
             case model.cardId of
                 Just id  ->
 
@@ -94,9 +94,9 @@ view model =
                        [
                          Attribute.type_ "input"
                        , Attribute.value inputValue
-                       , Event.onInput CardId
+                       , Event.onInput UpdateCardId
                        ] []
-                  , Html.button [ Event.onClick Collect ] [ Html.text "collect" ]
+                  , Html.button [ Event.onClick AddToCollection ] [ Html.text "collect" ]
                   ]
             , View.collectionView doNothing doNothing doNothing model.collection
             ]
