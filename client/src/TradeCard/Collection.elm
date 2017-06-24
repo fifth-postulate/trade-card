@@ -53,11 +53,19 @@ type CollectError =
 
 remove : Card.Card -> Collection -> Collection
 remove card collection =
-    let
-        newlyCollected =
-            Dict.remove card.id collection.collected
-    in
-        { collection | collected = newlyCollected }
+    case Dict.get card.id collection.collected of
+        Just (card, count) ->
+            let
+                newlyCollected =
+                    if count > 1 then
+                        Dict.insert card.id (card, count - 1) collection.collected
+                    else
+                        Dict.remove card.id collection.collected
+            in
+                { collection | collected = newlyCollected }
+
+        Nothing ->
+            collection
 
 
 collected : Collection -> List Card.Card
