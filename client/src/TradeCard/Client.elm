@@ -98,9 +98,6 @@ view model =
             |> Maybe.map toString
             |> Maybe.withDefault ""
 
-        doNothing =
-            \c -> DoNothing
-
         trade =
             \c -> Trade c
 
@@ -121,7 +118,7 @@ view model =
                        ] []
                   , Html.button [ Event.onClick AddToCollection ] [ Html.text "collect" ]
                   ]
-            , View.collectionView doNothing trade collect model.collection
+            , View.collectionView collect trade collect model.collection
             ]
 
 

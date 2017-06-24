@@ -8630,16 +8630,12 @@ var _fifth_postulate$trade_card$TradeCard_Client$AddToCollection = {ctor: 'AddTo
 var _fifth_postulate$trade_card$TradeCard_Client$UpdateCardId = function (a) {
 	return {ctor: 'UpdateCardId', _0: a};
 };
-var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
 var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 	var collect = function (c) {
 		return _fifth_postulate$trade_card$TradeCard_Client$Collect(c);
 	};
 	var trade = function (c) {
 		return _fifth_postulate$trade_card$TradeCard_Client$Trade(c);
-	};
-	var doNothing = function (c) {
-		return _fifth_postulate$trade_card$TradeCard_Client$DoNothing;
 	};
 	var inputValue = A2(
 		_elm_lang$core$Maybe$withDefault,
@@ -8694,13 +8690,14 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 				}),
 			_1: {
 				ctor: '::',
-				_0: A4(_fifth_postulate$trade_card$TradeCard_View$collectionView, doNothing, trade, collect, model.collection),
+				_0: A4(_fifth_postulate$trade_card$TradeCard_View$collectionView, collect, trade, collect, model.collection),
 				_1: {ctor: '[]'}
 			}
 		});
 };
 var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$html$Html$program(
 	{init: _fifth_postulate$trade_card$TradeCard_Client$init, update: _fifth_postulate$trade_card$TradeCard_Client$update, view: _fifth_postulate$trade_card$TradeCard_Client$view, subscriptions: _fifth_postulate$trade_card$TradeCard_Client$subscriptions})();
+var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
 
 var Elm = {};
 Elm['TradeCard'] = Elm['TradeCard'] || {};
