@@ -36,6 +36,7 @@ type Message =
     | UpdateCardId String
     | AddToCollection
     | Collect Card.Card
+    | Trade Card.Card
 
 
 update : Message -> Model -> (Model, Cmd Message)
@@ -81,6 +82,13 @@ update message model =
                 Err _ ->
                     (model, Cmd.none)
 
+        Trade card ->
+            let
+                nextCollection =
+                    Collection.remove card model.collection
+            in
+                ({ model | collection = nextCollection, cardId = Nothing }, Cmd.none)
+
 
 view : Model -> Html.Html Message
 view model =
@@ -92,6 +100,9 @@ view model =
 
         doNothing =
             \c -> DoNothing
+
+        trade =
+            \c -> Trade c
 
         collect =
             \c -> Collect c
@@ -110,7 +121,7 @@ view model =
                        ] []
                   , Html.button [ Event.onClick AddToCollection ] [ Html.text "collect" ]
                   ]
-            , View.collectionView doNothing doNothing collect model.collection
+            , View.collectionView doNothing trade collect model.collection
             ]
 
 
