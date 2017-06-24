@@ -8286,41 +8286,47 @@ var _fifth_postulate$trade_card$TradeCard_Card$cardFace = function (card) {
 		3,
 		'0');
 };
-var _fifth_postulate$trade_card$TradeCard_Card$view = function (card) {
-	var cardId = A2(
-		_elm_lang$core$Basics_ops['++'],
-		'card-',
-		_elm_lang$core$Basics$toString(card.id));
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$classList(
-				{
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'card', _1: true},
-					_1: {
+var _fifth_postulate$trade_card$TradeCard_Card$view = F2(
+	function (message, card) {
+		var cardId = A2(
+			_elm_lang$core$Basics_ops['++'],
+			'card-',
+			_elm_lang$core$Basics$toString(card.id));
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$classList(
+					{
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: cardId, _1: true},
+						_0: {ctor: '_Tuple2', _0: 'card', _1: true},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: cardId, _1: true},
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$span,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(
+							message(card)),
 						_1: {ctor: '[]'}
-					}
-				}),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$span,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						_fifth_postulate$trade_card$TradeCard_Card$cardFace(card)),
-					_1: {ctor: '[]'}
-				}),
-			_1: {ctor: '[]'}
-		});
-};
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							_fifth_postulate$trade_card$TradeCard_Card$cardFace(card)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
 var _fifth_postulate$trade_card$TradeCard_Card$Card = function (a) {
 	return {id: a};
 };
@@ -8372,10 +8378,21 @@ var _fifth_postulate$trade_card$TradeCard_Collection$collected = function (colle
 };
 var _fifth_postulate$trade_card$TradeCard_Collection$remove = F2(
 	function (card, collection) {
-		var newlyCollected = A2(_elm_lang$core$Dict$remove, card.id, collection.collected);
-		return _elm_lang$core$Native_Utils.update(
-			collection,
-			{collected: newlyCollected});
+		var _p0 = A2(_elm_lang$core$Dict$get, card.id, collection.collected);
+		if (_p0.ctor === 'Just') {
+			var _p2 = _p0._0._1;
+			var _p1 = _p0._0._0;
+			var newlyCollected = (_elm_lang$core$Native_Utils.cmp(_p2, 1) > 0) ? A3(
+				_elm_lang$core$Dict$insert,
+				_p1.id,
+				{ctor: '_Tuple2', _0: _p1, _1: _p2 - 1},
+				collection.collected) : A2(_elm_lang$core$Dict$remove, _p1.id, collection.collected);
+			return _elm_lang$core$Native_Utils.update(
+				collection,
+				{collected: newlyCollected});
+		} else {
+			return collection;
+		}
 	});
 var _fifth_postulate$trade_card$TradeCard_Collection$empty = F2(
 	function (low, high) {
@@ -8406,12 +8423,12 @@ var _fifth_postulate$trade_card$TradeCard_Collection$collect = F2(
 			id,
 			_elm_lang$core$Tuple$second(range)) < 1);
 		if (idInRange) {
-			var _p0 = A2(_elm_lang$core$Dict$get, id, collection.collected);
-			if (_p0.ctor === 'Just') {
+			var _p3 = A2(_elm_lang$core$Dict$get, id, collection.collected);
+			if (_p3.ctor === 'Just') {
 				var newlyCollected = A3(
 					_elm_lang$core$Dict$insert,
 					id,
-					{ctor: '_Tuple2', _0: _p0._0._0, _1: _p0._0._1 + 1},
+					{ctor: '_Tuple2', _0: _p3._0._0, _1: _p3._0._1 + 1},
 					collection.collected);
 				return _elm_lang$core$Result$Ok(
 					_elm_lang$core$Native_Utils.update(
@@ -8434,78 +8451,94 @@ var _fifth_postulate$trade_card$TradeCard_Collection$collect = F2(
 		}
 	});
 
-var _fifth_postulate$trade_card$TradeCard_View$doublicityView = function (_p0) {
-	var _p1 = _p0;
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _fifth_postulate$trade_card$TradeCard_Card$view(_p1._0),
-			_1: {
+var _fifth_postulate$trade_card$TradeCard_View$doublicityView = F2(
+	function (message, _p0) {
+		var _p1 = _p0;
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
 				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$span,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('duplicity'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							_elm_lang$core$Basics$toString(_p1._1)),
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			}
-		});
-};
-var _fifth_postulate$trade_card$TradeCard_View$duplicityList = function (doubles) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('card duplicity list'),
-			_1: {ctor: '[]'}
-		},
-		A2(_elm_lang$core$List$map, _fifth_postulate$trade_card$TradeCard_View$doublicityView, doubles));
-};
-var _fifth_postulate$trade_card$TradeCard_View$viewCardList = function (cards) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('card list'),
-			_1: {ctor: '[]'}
-		},
-		A2(_elm_lang$core$List$map, _fifth_postulate$trade_card$TradeCard_Card$view, cards));
-};
-var _fifth_postulate$trade_card$TradeCard_View$collectionView = function (collection) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('card collection'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: _fifth_postulate$trade_card$TradeCard_View$viewCardList(
-				_fifth_postulate$trade_card$TradeCard_Collection$collected(collection)),
-			_1: {
-				ctor: '::',
-				_0: _fifth_postulate$trade_card$TradeCard_View$duplicityList(
-					_fifth_postulate$trade_card$TradeCard_Collection$doubles(collection)),
+				_0: A2(_fifth_postulate$trade_card$TradeCard_Card$view, message, _p1._0),
 				_1: {
 					ctor: '::',
-					_0: _fifth_postulate$trade_card$TradeCard_View$viewCardList(
-						_fifth_postulate$trade_card$TradeCard_Collection$missing(collection)),
+					_0: A2(
+						_elm_lang$html$Html$span,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('duplicity'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(_p1._1)),
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				}
-			}
-		});
-};
+			});
+	});
+var _fifth_postulate$trade_card$TradeCard_View$duplicityList = F2(
+	function (message, doubles) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('card duplicity list'),
+				_1: {ctor: '[]'}
+			},
+			A2(
+				_elm_lang$core$List$map,
+				_fifth_postulate$trade_card$TradeCard_View$doublicityView(message),
+				doubles));
+	});
+var _fifth_postulate$trade_card$TradeCard_View$viewCardList = F2(
+	function (message, cards) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('card list'),
+				_1: {ctor: '[]'}
+			},
+			A2(
+				_elm_lang$core$List$map,
+				_fifth_postulate$trade_card$TradeCard_Card$view(message),
+				cards));
+	});
+var _fifth_postulate$trade_card$TradeCard_View$collectionView = F4(
+	function (collectedMessage, doubleMessage, missingMessage, collection) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('card collection'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_fifth_postulate$trade_card$TradeCard_View$viewCardList,
+					collectedMessage,
+					_fifth_postulate$trade_card$TradeCard_Collection$collected(collection)),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_fifth_postulate$trade_card$TradeCard_View$duplicityList,
+						doubleMessage,
+						_fifth_postulate$trade_card$TradeCard_Collection$doubles(collection)),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_fifth_postulate$trade_card$TradeCard_View$viewCardList,
+							missingMessage,
+							_fifth_postulate$trade_card$TradeCard_Collection$missing(collection)),
+						_1: {ctor: '[]'}
+					}
+				}
+			});
+	});
 
 var _fifth_postulate$trade_card$TradeCard_Client$subscriptions = function (_p0) {
 	return _elm_lang$core$Platform_Sub$none;
@@ -8516,7 +8549,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 		switch (_p1.ctor) {
 			case 'DoNothing':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'CardId':
+			case 'UpdateCardId':
 				var id = _elm_lang$core$String$toInt(_p1._0);
 				var _p2 = id;
 				if (_p2.ctor === 'Ok') {
@@ -8532,7 +8565,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
-			default:
+			case 'AddToCollection':
 				var _p3 = model.cardId;
 				if (_p3.ctor === 'Just') {
 					var card = {id: _p3._0};
@@ -8551,6 +8584,28 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
+			case 'Collect':
+				var _p5 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, _p1._0, model.collection);
+				if (_p5.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{collection: _p5._0, cardId: _elm_lang$core$Maybe$Nothing}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			default:
+				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p1._0, model.collection);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{collection: nextCollection, cardId: _elm_lang$core$Maybe$Nothing}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _fifth_postulate$trade_card$TradeCard_Client$init = {
@@ -8565,11 +8620,27 @@ var _fifth_postulate$trade_card$TradeCard_Client$Model = F2(
 	function (a, b) {
 		return {cardId: a, collection: b};
 	});
-var _fifth_postulate$trade_card$TradeCard_Client$Collect = {ctor: 'Collect'};
-var _fifth_postulate$trade_card$TradeCard_Client$CardId = function (a) {
-	return {ctor: 'CardId', _0: a};
+var _fifth_postulate$trade_card$TradeCard_Client$Trade = function (a) {
+	return {ctor: 'Trade', _0: a};
 };
+var _fifth_postulate$trade_card$TradeCard_Client$Collect = function (a) {
+	return {ctor: 'Collect', _0: a};
+};
+var _fifth_postulate$trade_card$TradeCard_Client$AddToCollection = {ctor: 'AddToCollection'};
+var _fifth_postulate$trade_card$TradeCard_Client$UpdateCardId = function (a) {
+	return {ctor: 'UpdateCardId', _0: a};
+};
+var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
 var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
+	var collect = function (c) {
+		return _fifth_postulate$trade_card$TradeCard_Client$Collect(c);
+	};
+	var trade = function (c) {
+		return _fifth_postulate$trade_card$TradeCard_Client$Trade(c);
+	};
+	var doNothing = function (c) {
+		return _fifth_postulate$trade_card$TradeCard_Client$DoNothing;
+	};
 	var inputValue = A2(
 		_elm_lang$core$Maybe$withDefault,
 		'',
@@ -8598,7 +8669,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 								_0: _elm_lang$html$Html_Attributes$value(inputValue),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onInput(_fifth_postulate$trade_card$TradeCard_Client$CardId),
+									_0: _elm_lang$html$Html_Events$onInput(_fifth_postulate$trade_card$TradeCard_Client$UpdateCardId),
 									_1: {ctor: '[]'}
 								}
 							}
@@ -8610,7 +8681,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 							_elm_lang$html$Html$button,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(_fifth_postulate$trade_card$TradeCard_Client$Collect),
+								_0: _elm_lang$html$Html_Events$onClick(_fifth_postulate$trade_card$TradeCard_Client$AddToCollection),
 								_1: {ctor: '[]'}
 							},
 							{
@@ -8623,14 +8694,13 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 				}),
 			_1: {
 				ctor: '::',
-				_0: _fifth_postulate$trade_card$TradeCard_View$collectionView(model.collection),
+				_0: A4(_fifth_postulate$trade_card$TradeCard_View$collectionView, doNothing, trade, collect, model.collection),
 				_1: {ctor: '[]'}
 			}
 		});
 };
 var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$html$Html$program(
 	{init: _fifth_postulate$trade_card$TradeCard_Client$init, update: _fifth_postulate$trade_card$TradeCard_Client$update, view: _fifth_postulate$trade_card$TradeCard_Client$view, subscriptions: _fifth_postulate$trade_card$TradeCard_Client$subscriptions})();
-var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
 
 var Elm = {};
 Elm['TradeCard'] = Elm['TradeCard'] || {};
