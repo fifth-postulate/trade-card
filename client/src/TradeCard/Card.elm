@@ -19,9 +19,12 @@ view message card =
         cardId = "card-" ++ (toString card.id)
     in
         Html.div
-            [ Attribute.classList [ ("card", True), (cardId, True) ] ]
             [
-              Html.span [ Event.onClick (message card) ] [ Html.text (cardFace card) ]
+              Attribute.classList [ ("card", True), (cardId, True) ]
+            , Event.onClick (message card)
+            ]
+            [
+              Html.span [] [ Html.text (cardFace card) ]
             ]
 
 
