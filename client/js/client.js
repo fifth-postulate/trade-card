@@ -8493,6 +8493,10 @@ var _fifth_postulate$trade_card$TradeCard_View$duplicityList = F2(
 				_fifth_postulate$trade_card$TradeCard_View$doublicityView(message),
 				doubles));
 	});
+var _fifth_postulate$trade_card$TradeCard_View$viewCard = F2(
+	function (message, card) {
+		return A2(_fifth_postulate$trade_card$TradeCard_Card$view, message, card);
+	});
 var _fifth_postulate$trade_card$TradeCard_View$viewCardList = F2(
 	function (message, cards) {
 		return A2(
@@ -8504,7 +8508,7 @@ var _fifth_postulate$trade_card$TradeCard_View$viewCardList = F2(
 			},
 			A2(
 				_elm_lang$core$List$map,
-				_fifth_postulate$trade_card$TradeCard_Card$view(message),
+				_fifth_postulate$trade_card$TradeCard_View$viewCard(message),
 				cards));
 	});
 var _fifth_postulate$trade_card$TradeCard_View$collectionView = F4(

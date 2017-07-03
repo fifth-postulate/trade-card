@@ -22,8 +22,12 @@ viewCardList : (Card.Card -> msg) -> List Card.Card -> Html.Html msg
 viewCardList message cards =
     Html.div
         [ Attribute.class "card list" ]
-        (List.map (Card.view message) cards)
+        (List.map (viewCard message) cards)
 
+
+viewCard : (Card.Card -> msg) -> Card.Card -> Html.Html msg
+viewCard message card =
+    (Card.view message) card
 
 duplicityList : (Card.Card -> msg) -> List (Card.Card, Int) -> Html.Html msg
 duplicityList message doubles =
