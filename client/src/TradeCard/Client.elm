@@ -37,6 +37,7 @@ type Message =
     | AddToCollection
     | Collect Card.Card
     | Trade Card.Card
+    | Remove Card.Card
 
 
 update : Message -> Model -> (Model, Cmd Message)
@@ -89,6 +90,12 @@ update message model =
             in
                 ({ model | collection = nextCollection, cardId = Nothing }, Cmd.none)
 
+        Remove card ->
+            let
+                nextCollection =
+                    Collection.remove card model.collection
+            in
+                ({ model | collection = nextCollection, cardId = Nothing }, Cmd.none)
 
 view : Model -> Html.Html Message
 view model =
@@ -103,6 +110,9 @@ view model =
 
         collect =
             \c -> Collect c
+
+        lose =
+            \c -> Remove c
     in
         Html.div
             []
@@ -118,7 +128,7 @@ view model =
                        ] []
                   , Html.button [ Event.onClick AddToCollection ] [ Html.text "collect" ]
                   ]
-            , View.collectionView collect trade collect model.collection
+            , View.collectionView collect lose trade collect model.collection
             ]
 
 

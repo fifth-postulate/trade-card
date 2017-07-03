@@ -8493,12 +8493,35 @@ var _fifth_postulate$trade_card$TradeCard_View$duplicityList = F2(
 				_fifth_postulate$trade_card$TradeCard_View$doublicityView(message),
 				doubles));
 	});
-var _fifth_postulate$trade_card$TradeCard_View$viewCard = F2(
-	function (message, card) {
-		return A2(_fifth_postulate$trade_card$TradeCard_Card$view, message, card);
+var _fifth_postulate$trade_card$TradeCard_View$viewCard = F3(
+	function (primary, secondary, card) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(_fifth_postulate$trade_card$TradeCard_Card$view, primary, card),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$span,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								secondary(card)),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('x'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
 	});
-var _fifth_postulate$trade_card$TradeCard_View$viewCardList = F2(
-	function (message, cards) {
+var _fifth_postulate$trade_card$TradeCard_View$viewCardList = F3(
+	function (primary, secondary, cards) {
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -8508,11 +8531,11 @@ var _fifth_postulate$trade_card$TradeCard_View$viewCardList = F2(
 			},
 			A2(
 				_elm_lang$core$List$map,
-				_fifth_postulate$trade_card$TradeCard_View$viewCard(message),
+				A2(_fifth_postulate$trade_card$TradeCard_View$viewCard, primary, secondary),
 				cards));
 	});
-var _fifth_postulate$trade_card$TradeCard_View$collectionView = F4(
-	function (collectedMessage, doubleMessage, missingMessage, collection) {
+var _fifth_postulate$trade_card$TradeCard_View$collectionView = F5(
+	function (collectedMessage, lostMessage, doubleMessage, missingMessage, collection) {
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -8522,9 +8545,10 @@ var _fifth_postulate$trade_card$TradeCard_View$collectionView = F4(
 			},
 			{
 				ctor: '::',
-				_0: A2(
+				_0: A3(
 					_fifth_postulate$trade_card$TradeCard_View$viewCardList,
 					collectedMessage,
+					lostMessage,
 					_fifth_postulate$trade_card$TradeCard_Collection$collected(collection)),
 				_1: {
 					ctor: '::',
@@ -8534,9 +8558,10 @@ var _fifth_postulate$trade_card$TradeCard_View$collectionView = F4(
 						_fifth_postulate$trade_card$TradeCard_Collection$doubles(collection)),
 					_1: {
 						ctor: '::',
-						_0: A2(
+						_0: A3(
 							_fifth_postulate$trade_card$TradeCard_View$viewCardList,
 							missingMessage,
+							lostMessage,
 							_fifth_postulate$trade_card$TradeCard_Collection$missing(collection)),
 						_1: {ctor: '[]'}
 					}
@@ -8601,6 +8626,15 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
+			case 'Trade':
+				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p1._0, model.collection);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{collection: nextCollection, cardId: _elm_lang$core$Maybe$Nothing}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			default:
 				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p1._0, model.collection);
 				return {
@@ -8624,6 +8658,9 @@ var _fifth_postulate$trade_card$TradeCard_Client$Model = F2(
 	function (a, b) {
 		return {cardId: a, collection: b};
 	});
+var _fifth_postulate$trade_card$TradeCard_Client$Remove = function (a) {
+	return {ctor: 'Remove', _0: a};
+};
 var _fifth_postulate$trade_card$TradeCard_Client$Trade = function (a) {
 	return {ctor: 'Trade', _0: a};
 };
@@ -8635,6 +8672,9 @@ var _fifth_postulate$trade_card$TradeCard_Client$UpdateCardId = function (a) {
 	return {ctor: 'UpdateCardId', _0: a};
 };
 var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
+	var lose = function (c) {
+		return _fifth_postulate$trade_card$TradeCard_Client$Remove(c);
+	};
 	var collect = function (c) {
 		return _fifth_postulate$trade_card$TradeCard_Client$Collect(c);
 	};
@@ -8694,7 +8734,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 				}),
 			_1: {
 				ctor: '::',
-				_0: A4(_fifth_postulate$trade_card$TradeCard_View$collectionView, collect, trade, collect, model.collection),
+				_0: A5(_fifth_postulate$trade_card$TradeCard_View$collectionView, collect, lose, trade, collect, model.collection),
 				_1: {ctor: '[]'}
 			}
 		});
