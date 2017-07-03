@@ -112,7 +112,7 @@ view model =
             \c -> Collect c
 
         lose =
-            \c -> Remove c
+            Just (\c -> Remove c)
     in
         Html.div
             []

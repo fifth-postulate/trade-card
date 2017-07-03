@@ -8495,27 +8495,38 @@ var _fifth_postulate$trade_card$TradeCard_View$duplicityList = F2(
 	});
 var _fifth_postulate$trade_card$TradeCard_View$viewCard = F3(
 	function (primary, secondary, card) {
+		var element = function () {
+			var _p2 = secondary;
+			if (_p2.ctor === 'Just') {
+				return A2(
+					_elm_lang$html$Html$span,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(
+							_p2._0(card)),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('x'),
+						_1: {ctor: '[]'}
+					});
+			} else {
+				return A2(
+					_elm_lang$html$Html$span,
+					{ctor: '[]'},
+					{ctor: '[]'});
+			}
+		}();
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: A2(_fifth_postulate$trade_card$TradeCard_Card$view, primary, card),
+				_0: element,
 				_1: {
 					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$span,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(
-								secondary(card)),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text('x'),
-							_1: {ctor: '[]'}
-						}),
+					_0: A2(_fifth_postulate$trade_card$TradeCard_Card$view, primary, card),
 					_1: {ctor: '[]'}
 				}
 			});
@@ -8561,7 +8572,7 @@ var _fifth_postulate$trade_card$TradeCard_View$collectionView = F5(
 						_0: A3(
 							_fifth_postulate$trade_card$TradeCard_View$viewCardList,
 							missingMessage,
-							lostMessage,
+							_elm_lang$core$Maybe$Nothing,
 							_fifth_postulate$trade_card$TradeCard_Collection$missing(collection)),
 						_1: {ctor: '[]'}
 					}
@@ -8672,9 +8683,10 @@ var _fifth_postulate$trade_card$TradeCard_Client$UpdateCardId = function (a) {
 	return {ctor: 'UpdateCardId', _0: a};
 };
 var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
-	var lose = function (c) {
-		return _fifth_postulate$trade_card$TradeCard_Client$Remove(c);
-	};
+	var lose = _elm_lang$core$Maybe$Just(
+		function (c) {
+			return _fifth_postulate$trade_card$TradeCard_Client$Remove(c);
+		});
 	var collect = function (c) {
 		return _fifth_postulate$trade_card$TradeCard_Client$Collect(c);
 	};

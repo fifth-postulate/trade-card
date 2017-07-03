@@ -8,32 +8,42 @@ import TradeCard.Card as Card
 import TradeCard.Collection as Collection
 
 
-collectionView : (Card.Card -> msg) -> (Card.Card -> msg) -> (Card.Card -> msg) -> (Card.Card -> msg) ->  Collection.Collection -> Html.Html msg
+collectionView : (Card.Card -> msg) -> Maybe (Card.Card -> msg) -> (Card.Card -> msg) -> (Card.Card -> msg) ->  Collection.Collection -> Html.Html msg
 collectionView collectedMessage lostMessage doubleMessage missingMessage collection =
     Html.div
         [ Attribute.class "card collection" ]
         [
           viewCardList collectedMessage lostMessage (Collection.collected collection)
         , duplicityList doubleMessage (Collection.doubles collection)
-        , viewCardList missingMessage lostMessage (Collection.missing collection)
+        , viewCardList missingMessage Nothing (Collection.missing collection)
         ]
 
 
-viewCardList : (Card.Card -> msg) -> (Card.Card -> msg)-> List Card.Card -> Html.Html msg
+viewCardList : (Card.Card -> msg) -> Maybe (Card.Card -> msg)-> List Card.Card -> Html.Html msg
 viewCardList primary secondary cards =
     Html.div
         [ Attribute.class "card list" ]
         (List.map (viewCard primary secondary) cards)
 
 
-viewCard : (Card.Card -> msg) -> (Card.Card -> msg) -> Card.Card -> Html.Html msg
+viewCard : (Card.Card -> msg) -> Maybe (Card.Card -> msg) -> Card.Card -> Html.Html msg
 viewCard primary secondary card =
-    Html.div
-        []
-        [
-          (Card.view primary) card
-        , Html.span [ Event.onClick (secondary card) ] [ Html.text "x" ]
-        ]
+    let
+        element =
+            case secondary of
+                Just lose ->
+                    Html.span [ Event.onClick (lose card) ] [ Html.text "x" ]
+
+                Nothing ->
+                    Html.span [] []
+    in
+        Html.div
+            []
+            (element
+            ::
+            [
+             (Card.view primary) card
+            ])
 
 
 duplicityList : (Card.Card -> msg) -> List (Card.Card, Int) -> Html.Html msg
