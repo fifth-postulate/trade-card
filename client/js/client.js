@@ -8593,6 +8593,14 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 		switch (_p1.ctor) {
 			case 'DoNothing':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'ToggleSychronisation':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{synchronize: _p1._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'UpdateCardId':
 				var id = _elm_lang$core$String$toInt(_p1._0);
 				var _p2 = id;
@@ -8661,17 +8669,22 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 				};
 		}
 	});
+var _fifth_postulate$trade_card$TradeCard_Client$emptyModel = F2(
+	function (low, high) {
+		return {
+			synchronize: false,
+			cardId: _elm_lang$core$Maybe$Nothing,
+			collection: A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, low, high)
+		};
+	});
 var _fifth_postulate$trade_card$TradeCard_Client$init = {
 	ctor: '_Tuple2',
-	_0: {
-		cardId: _elm_lang$core$Maybe$Nothing,
-		collection: A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, 1, 15)
-	},
+	_0: A2(_fifth_postulate$trade_card$TradeCard_Client$emptyModel, 1, 15),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
-var _fifth_postulate$trade_card$TradeCard_Client$Model = F2(
-	function (a, b) {
-		return {cardId: a, collection: b};
+var _fifth_postulate$trade_card$TradeCard_Client$Model = F3(
+	function (a, b, c) {
+		return {synchronize: a, cardId: b, collection: c};
 	});
 var _fifth_postulate$trade_card$TradeCard_Client$Remove = function (a) {
 	return {ctor: 'Remove', _0: a};
@@ -8685,6 +8698,9 @@ var _fifth_postulate$trade_card$TradeCard_Client$Collect = function (a) {
 var _fifth_postulate$trade_card$TradeCard_Client$AddToCollection = {ctor: 'AddToCollection'};
 var _fifth_postulate$trade_card$TradeCard_Client$UpdateCardId = function (a) {
 	return {ctor: 'UpdateCardId', _0: a};
+};
+var _fifth_postulate$trade_card$TradeCard_Client$ToggleSychronisation = function (a) {
+	return {ctor: 'ToggleSychronisation', _0: a};
 };
 var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 	var lose = _elm_lang$core$Maybe$Just(
@@ -8745,7 +8761,26 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 								_0: _elm_lang$html$Html$text('collect'),
 								_1: {ctor: '[]'}
 							}),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$input,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$checked(model.synchronize),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onCheck(_fifth_postulate$trade_card$TradeCard_Client$ToggleSychronisation),
+											_1: {ctor: '[]'}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}),
 			_1: {

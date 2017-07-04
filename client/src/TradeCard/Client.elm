@@ -21,18 +21,25 @@ main =
 
 init : (Model, Cmd msg)
 init =
-    ({ cardId = Nothing, collection = Collection.empty 1 15 } , Cmd.none)
+    (emptyModel 1 15 , Cmd.none)
 
 
 type alias Model =
     {
-      cardId: Maybe Int
+      synchronize: Bool
+    , cardId: Maybe Int
     , collection: Collection.Collection
     }
 
 
+emptyModel : Int -> Int -> Model
+emptyModel low high =
+    { synchronize = False, cardId = Nothing, collection = Collection.empty low high }
+
+
 type Message =
       DoNothing
+    | ToggleSychronisation Bool
     | UpdateCardId String
     | AddToCollection
     | Collect Card.Card
@@ -45,6 +52,9 @@ update message model =
     case message of
         DoNothing ->
             (model, Cmd.none)
+
+        ToggleSychronisation value ->
+            ({ model | synchronize = value }, Cmd.none)
 
         UpdateCardId representation ->
             let
@@ -127,6 +137,12 @@ view model =
                        , Event.onInput UpdateCardId
                        ] []
                   , Html.button [ Event.onClick AddToCollection ] [ Html.text "collect" ]
+                  , Html.input
+                      [
+                        Attribute.type_ "checkbox"
+                      , Attribute.checked model.synchronize
+                      , Event.onCheck ToggleSychronisation
+                      ] []
                   ]
             , View.collectionView collect lose trade collect model.collection
             ]
