@@ -32,7 +32,7 @@ viewCard primary secondary card =
         element =
             case secondary of
                 Just lose ->
-                    Html.span [ Event.onClick (lose card) ] [ Html.text "x" ]
+                    Html.span [ Attribute.class "lose", Event.onClick (lose card) ] [ Html.text "x" ]
 
                 Nothing ->
                     Html.span [] []

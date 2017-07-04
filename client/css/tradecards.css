@@ -6,6 +6,7 @@ body {
     --collection-card-border-radius: 5px;
     --collection-card-duplicity-size: 25px;
     --collection-card-duplicity-rotation: rotate(10deg);
+    --collection-card-lose-size: 25px;
 }
 
 h1 { text-align: center; }
@@ -73,4 +74,19 @@ h1 { text-align: center; }
     position: absolute;
     top: calc(2*var(--collection-card-border-radius));
     left: 60%;
+}
+
+.card.list .lose {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: var(--collection-card-lose-size);
+    height: var(--collection-card-lose-size);
+    border-radius: calc(var(--collection-card-lose-size)/2);
+    background-color: blue;
+    color: white;
+    position: absolute;
+    top: var(--collection-card-border-radius);
+    left: 10%;
 }

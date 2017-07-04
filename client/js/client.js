@@ -8502,9 +8502,13 @@ var _fifth_postulate$trade_card$TradeCard_View$viewCard = F3(
 					_elm_lang$html$Html$span,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(
-							_p2._0(card)),
-						_1: {ctor: '[]'}
+						_0: _elm_lang$html$Html_Attributes$class('lose'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								_p2._0(card)),
+							_1: {ctor: '[]'}
+						}
 					},
 					{
 						ctor: '::',
