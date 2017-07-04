@@ -1,0 +1,97 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "powet/elm-pouchdb",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "powet/elm-pouchdb",
+        "spec": "github:powet/elm-pouchdb",
+        "type": "hosted",
+        "hosted": {
+          "type": "github",
+          "ssh": "git@github.com:powet/elm-pouchdb.git",
+          "sshUrl": "git+ssh://git@github.com/powet/elm-pouchdb.git",
+          "httpsUrl": "git+https://github.com/powet/elm-pouchdb.git",
+          "gitUrl": "git://github.com/powet/elm-pouchdb.git",
+          "shortcut": "github:powet/elm-pouchdb",
+          "directUrl": "https://raw.githubusercontent.com/powet/elm-pouchdb/master/package.json"
+        }
+      },
+      "/home/dvberkel/scratch/fifth-postulate/trade-card/client"
+    ]
+  ],
+  "_from": "powet/elm-pouchdb",
+  "_id": "elm-pouchdb@1.0.4",
+  "_inCache": true,
+  "_location": "/elm-pouchdb",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "powet/elm-pouchdb",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "powet/elm-pouchdb",
+    "spec": "github:powet/elm-pouchdb",
+    "type": "hosted",
+    "hosted": {
+      "type": "github",
+      "ssh": "git@github.com:powet/elm-pouchdb.git",
+      "sshUrl": "git+ssh://git@github.com/powet/elm-pouchdb.git",
+      "httpsUrl": "git+https://github.com/powet/elm-pouchdb.git",
+      "gitUrl": "git://github.com/powet/elm-pouchdb.git",
+      "shortcut": "github:powet/elm-pouchdb",
+      "directUrl": "https://raw.githubusercontent.com/powet/elm-pouchdb/master/package.json"
+    }
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "git://github.com/powet/elm-pouchdb.git#a9b3de873e0cd2379f1f26fba6c3996a02679673",
+  "_shasum": "be852923edc9aaec8e3a31c21dbf16cd48594089",
+  "_shrinkwrap": null,
+  "_spec": "powet/elm-pouchdb",
+  "_where": "/home/dvberkel/scratch/fifth-postulate/trade-card/client",
+  "author": {
+    "name": "Etienne Cavard"
+  },
+  "bugs": {
+    "url": "https://github.com/powet/elm-pouchdb/issues"
+  },
+  "dependencies": {},
+  "description": "Native review request was posted on the 2016-dec-09. Ref is [#200](https://github.com/elm-lang/package.elm-lang.org/issues/200)",
+  "devDependencies": {
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-elm": "^0.6.1",
+    "gulp-plumber": "^1.1.0",
+    "gulp-util": "^3.0.7"
+  },
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "gitHead": "a9b3de873e0cd2379f1f26fba6c3996a02679673",
+  "homepage": "https://github.com/powet/elm-pouchdb#readme",
+  "keywords": [
+    "pouchdb",
+    "elm"
+  ],
+  "license": "ISC",
+  "main": "README.md",
+  "name": "elm-pouchdb",
+  "optionalDependencies": {},
+  "readme": "# elm-pouchdb\n\nMigrated to Elm 0.18 : Consequences are that elm-reactor no longer works with Pouchdb objects because Pouchdb objects cannot be displayed (crash!) in the debugger model window.\nPlease use another workflow, I've used gulp it's pretty easy to use.\n\nNative review request was posted on the 2016-dec-09. Ref is [#200](https://github.com/elm-lang/package.elm-lang.org/issues/200) \n\nThis library is a a set of [Elm](http://www.elm-lang.org/) modules that bind the functionalities of the great [pouchdb](https://pouchdb.com/) library. This library enables the user to use [Couchdb](http://couchdb.apache.org/)/[pouchdb](https://pouchdb.com/) database. It is great tool for mobile first applications, thanks to the powerfull sync feature of Couchdb comptatible databases.\n\n\nIt contains:\n- **Pouchdb** module for dealing with the creation of databases and standard operations like put, post, get, all_docs and queries and many others...\n- **Change** effect module that provides subscriptions for listening to document events within the databases.\n- **Replicate** effect module that provides subscriptions for replicating one database to the another.\n- **Sync** effect module that provides subscritions for syncing one database to another.\n-  **Events** effect module that provides subscritions for listening to database events.\n\n\nThis library was initially created by **Etienne Cavard** for **Oriata** and posted under **BSD3 license** on the 24 july 2016.\n\n\nThanks to the Pouchdb team and Elm-lang team for their respective work on the js [pouchdb](https://pouchdb.com/) library and the [Elm](http://www.elm-lang.org/) language.\n\n\n# Declaring local and remote database\n\n```elm\n\n    type alias Model =\n      { local : Pouchdb\n      , remote : Pouchdb\n      }\n    \n    initialModel : Model\n    initialModel =\n      let\n        local = db \"DB-Test\" dbOptions\n        remote = db \"https://xxxxxx.cloudant.com/db-test\"\n          (dbOptions\n            |> auth \"myUserName\" \"myPassword\"\n            |> ajaxCache True)\n      in \n        { local = local\n        , remote = remote\n        }\n        \n```\n# Put, Post, Get and All_docs, Query Operations on databases\n\nAll these oprations are implemented as Tasks. Below is an example for the **Put** Operation.\n\n```elm\n\n    type Message = PutButton\n                 | Put (Result Pouchdb.Fail Pouchdb.Put)\n\n    -- a bit of encoding\n    encoder : String->String->Encode.Value\n    encoder id val =\n       Encode.object\n          [ (\"_id\", Encode.string id)\n          , (\"val\", Encode.string val)\n          ]\n    \n    -- PutButton was sent by a button, see how a put task is now send.\n    \n    update : Message -> Model -> (Model, Cmd Message)\n    update msg model =\n      case msg of\n        PutButton->\n          let \n            task = (Pouchdb.put model.localDb (encoder \"id2\" \"hello\") Nothing)\n            cmd = Task.perform PutError PutSuccess task\n          in\n           (model,cmd)\n        Put msg->\n          let\n            newMsg = unpack\n                 (\\m->String.append \"Error putting in db with message = \" m.message)\n                 (\\m->String.append \"Successfully put in db with rev = \" m.rev)\n                  msg\n          in\n            ({model|returnMsg=Just newMsg}, Cmd.none)\n\n        \n```\n\n\n# Listening to document changes\n\nListening to document changes is done with a subscription mecanism\n\n```elm\n\n    type Message = Change Change.ChangeEvent\n                   | ...\n\n    update : Message -> Model -> (Model, Cmd Message)\n    update msg model =\n      case msg of\n        Change evt->\n          case evt of\n            Changed docValue ->\n              ... some doc changes here\n            Completed ->(model,Cmd.none)\n            Error _ ->(model,Cmd.none)\n        ...\n\n    subscriptions : Model -> Sub Message\n    subscriptions model =\n      let\n        options = Change.changeOptions\n                  |> since Now\n        \n        change = Change.new \"change1\" model.localDb options Change\n      in\n      change\n      \n```\n\n\n\n# Replicating documents from one database to another\n\nReplication is done with a subscription mecanism\n\n```elm\n\n    type Message = Replicate Replicate.ReplicateEvent\n                    | ...\n    \n    \n    type alias Model = { sourceDb : Pouchdb\n                       , destDb : Pouchdb\n                       ...\n                       }\n    ...\n\n    update : Message -> Model -> (Model, Cmd Message)\n    update msg model =\n      case msg of\n        Replicate evt->\n          -- providing all cases here, for documentation only\n          case evt of\n            Replicate.Completed value->(model,Cmd.none)\n            Replicate.Active value->(model,Cmd.none)\n            Replicate.Paused value->(model,Cmd.none)\n            Replicate.Changed value->(model,Cmd.none)\n            Replicate.Denied value->(model,Cmd.none)\n            Replicate.Error value->(model,Cmd.none)\n        ...\n    \n    subscriptions : Model -> Sub Message\n    subscriptions model =\n      let\n        replOpt = Replicate.defaultOptions\n        \n        replication = Replicate.new \"replication\" model.sourceDb model.destDb replOpt Replicate\n        ...\n      in\n      Sub.batch [replication, ...]\n      \n```",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/powet/elm-pouchdb.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.4"
+}
