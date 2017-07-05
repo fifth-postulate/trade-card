@@ -8,6 +8,11 @@ import TradeCard.Collection as Collection
 import TradeCard.View as View
 
 
+import Pouchdb
+import Json.Encode as Encode
+import Task
+
+
 main : Program Never Model Message
 main =
     Html.program
@@ -26,7 +31,9 @@ init =
 
 type alias Model =
     {
-      synchronize: Bool
+      message : Maybe String
+    , localDb : Pouchdb.Pouchdb
+    , synchronize: Bool
     , cardId: Maybe Int
     , collection: Collection.Collection
     }
@@ -34,8 +41,16 @@ type alias Model =
 
 emptyModel : Int -> Int -> Model
 emptyModel low high =
-    { synchronize = False, cardId = Nothing, collection = Collection.empty low high }
-
+    let
+        localDb = Pouchdb.db "try-output" Pouchdb.dbOptions
+    in
+        {
+          message = Nothing
+        , localDb = localDb
+        , synchronize = False
+        , cardId = Nothing
+        , collection = Collection.empty low high
+        }
 
 type Message =
       DoNothing
@@ -45,6 +60,15 @@ type Message =
     | Collect Card.Card
     | Trade Card.Card
     | Remove Card.Card
+    | Post (Result Pouchdb.Fail Pouchdb.Post)
+
+
+encoder : Bool -> Encode.Value
+encoder value =
+    Encode.object
+        [
+          ("value", Encode.bool value)
+        ]
 
 
 update : Message -> Model -> (Model, Cmd Message)
@@ -54,7 +78,23 @@ update message model =
             (model, Cmd.none)
 
         ToggleSychronisation value ->
-            ({ model | synchronize = value }, Cmd.none)
+            let
+                task = (Pouchdb.post model.localDb (encoder value))
+
+                command = Task.attempt Post task
+            in
+                ({ model | synchronize = value }, command)
+
+        Post msg ->
+            let
+                unpackedMessage =
+                    unpack
+                        (\m -> String.append "could not put message: " m.message)
+                        (\m -> String.append "saved message with revision: " m.rev)
+                        msg
+            in
+                ({ model | message = Just unpackedMessage }, Cmd.none)
+
 
         UpdateCardId representation ->
             let
@@ -107,6 +147,16 @@ update message model =
             in
                 ({ model | collection = nextCollection, cardId = Nothing }, Cmd.none)
 
+
+unpack : (e -> b) -> (a -> b) -> Result e a -> b
+unpack errFunc okFunc result =
+    case result of
+        Ok ok ->
+            okFunc ok
+        Err err ->
+            errFunc err
+
+
 view : Model -> Html.Html Message
 view model =
     let
@@ -114,6 +164,10 @@ view model =
             model.cardId
             |> Maybe.map toString
             |> Maybe.withDefault ""
+
+        message =
+            model.message
+                |> Maybe.withDefault ""
 
         trade =
             \c -> Trade c
@@ -127,7 +181,8 @@ view model =
         Html.div
             []
             [
-              Html.div
+              Html.div [] [ Html.span [] [ Html.text message ] ]
+            , Html.div
                   [ Attribute.class "collector"]
                   [
                     Html.input
