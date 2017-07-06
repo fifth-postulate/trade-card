@@ -9827,6 +9827,28 @@ var _fifth_postulate$trade_card$TradeCard_Client$unpack = F3(
 			return errFunc(_p1._0);
 		}
 	});
+var _fifth_postulate$trade_card$TradeCard_Client$encodeEvent = F2(
+	function (eventType, card) {
+		return _elm_lang$core$Json_Encode$object(
+			{
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'type',
+					_1: _elm_lang$core$Json_Encode$string(
+						_elm_lang$core$Basics$toString(eventType))
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'cardId',
+						_1: _elm_lang$core$Json_Encode$int(card.id)
+					},
+					_1: {ctor: '[]'}
+				}
+			});
+	});
 var _fifth_postulate$trade_card$TradeCard_Client$encoder = function (value) {
 	return _elm_lang$core$Json_Encode$object(
 		{
@@ -9862,113 +9884,6 @@ var _fifth_postulate$trade_card$TradeCard_Client$Model = F5(
 var _fifth_postulate$trade_card$TradeCard_Client$Post = function (a) {
 	return {ctor: 'Post', _0: a};
 };
-var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
-	function (message, model) {
-		var _p2 = message;
-		switch (_p2.ctor) {
-			case 'DoNothing':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'ToggleSychronisation':
-				var _p3 = _p2._0;
-				var task = A2(
-					_powet$elm_pouchdb$Pouchdb$post,
-					model.localDb,
-					_fifth_postulate$trade_card$TradeCard_Client$encoder(_p3));
-				var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$Post, task);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{synchronize: _p3}),
-					_1: command
-				};
-			case 'Post':
-				var unpackedMessage = A3(
-					_fifth_postulate$trade_card$TradeCard_Client$unpack,
-					function (m) {
-						return A2(_elm_lang$core$String$append, 'could not put message: ', m.message);
-					},
-					function (m) {
-						return A2(_elm_lang$core$String$append, 'saved message with revision: ', m.rev);
-					},
-					_p2._0);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							message: _elm_lang$core$Maybe$Just(unpackedMessage)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'UpdateCardId':
-				var id = _elm_lang$core$String$toInt(_p2._0);
-				var _p4 = id;
-				if (_p4.ctor === 'Ok') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								cardId: _elm_lang$core$Maybe$Just(_p4._0)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			case 'AddToCollection':
-				var _p5 = model.cardId;
-				if (_p5.ctor === 'Just') {
-					var card = {id: _p5._0};
-					var _p6 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, card, model.collection);
-					if (_p6.ctor === 'Ok') {
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Native_Utils.update(
-								model,
-								{collection: _p6._0, cardId: _elm_lang$core$Maybe$Nothing}),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					} else {
-						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-					}
-				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			case 'Collect':
-				var _p7 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, _p2._0, model.collection);
-				if (_p7.ctor === 'Ok') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{collection: _p7._0, cardId: _elm_lang$core$Maybe$Nothing}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			case 'Trade':
-				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p2._0, model.collection);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{collection: nextCollection, cardId: _elm_lang$core$Maybe$Nothing}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			default:
-				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p2._0, model.collection);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{collection: nextCollection, cardId: _elm_lang$core$Maybe$Nothing}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-		}
-	});
 var _fifth_postulate$trade_card$TradeCard_Client$Remove = function (a) {
 	return {ctor: 'Remove', _0: a};
 };
@@ -10092,9 +10007,142 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 			}
 		});
 };
+var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
+var _fifth_postulate$trade_card$TradeCard_Client$Lost = {ctor: 'Lost'};
+var _fifth_postulate$trade_card$TradeCard_Client$Traded = {ctor: 'Traded'};
+var _fifth_postulate$trade_card$TradeCard_Client$Collected = {ctor: 'Collected'};
+var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
+	function (message, model) {
+		var _p2 = message;
+		switch (_p2.ctor) {
+			case 'DoNothing':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'ToggleSychronisation':
+				var _p3 = _p2._0;
+				var task = A2(
+					_powet$elm_pouchdb$Pouchdb$post,
+					model.localDb,
+					_fifth_postulate$trade_card$TradeCard_Client$encoder(_p3));
+				var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$Post, task);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{synchronize: _p3}),
+					_1: command
+				};
+			case 'Post':
+				var unpackedMessage = A3(
+					_fifth_postulate$trade_card$TradeCard_Client$unpack,
+					function (m) {
+						return A2(_elm_lang$core$String$append, 'could not put message: ', m.message);
+					},
+					function (m) {
+						return A2(_elm_lang$core$String$append, 'saved message with revision: ', m.rev);
+					},
+					_p2._0);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							message: _elm_lang$core$Maybe$Just(unpackedMessage)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UpdateCardId':
+				var id = _elm_lang$core$String$toInt(_p2._0);
+				var _p4 = id;
+				if (_p4.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								cardId: _elm_lang$core$Maybe$Just(_p4._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'AddToCollection':
+				var _p5 = model.cardId;
+				if (_p5.ctor === 'Just') {
+					var card = {id: _p5._0};
+					var task = A2(
+						_powet$elm_pouchdb$Pouchdb$post,
+						model.localDb,
+						A2(_fifth_postulate$trade_card$TradeCard_Client$encodeEvent, _fifth_postulate$trade_card$TradeCard_Client$Collected, card));
+					var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$Post, task);
+					var _p6 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, card, model.collection);
+					if (_p6.ctor === 'Ok') {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{collection: _p6._0, cardId: _elm_lang$core$Maybe$Nothing}),
+							_1: command
+						};
+					} else {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					}
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'Collect':
+				var _p8 = _p2._0;
+				var task = A2(
+					_powet$elm_pouchdb$Pouchdb$post,
+					model.localDb,
+					A2(_fifth_postulate$trade_card$TradeCard_Client$encodeEvent, _fifth_postulate$trade_card$TradeCard_Client$Collected, _p8));
+				var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$Post, task);
+				var _p7 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, _p8, model.collection);
+				if (_p7.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{collection: _p7._0, cardId: _elm_lang$core$Maybe$Nothing}),
+						_1: command
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'Trade':
+				var _p9 = _p2._0;
+				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p9, model.collection);
+				var task = A2(
+					_powet$elm_pouchdb$Pouchdb$post,
+					model.localDb,
+					A2(_fifth_postulate$trade_card$TradeCard_Client$encodeEvent, _fifth_postulate$trade_card$TradeCard_Client$Traded, _p9));
+				var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$Post, task);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{collection: nextCollection, cardId: _elm_lang$core$Maybe$Nothing}),
+					_1: command
+				};
+			default:
+				var _p10 = _p2._0;
+				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p10, model.collection);
+				var task = A2(
+					_powet$elm_pouchdb$Pouchdb$post,
+					model.localDb,
+					A2(_fifth_postulate$trade_card$TradeCard_Client$encodeEvent, _fifth_postulate$trade_card$TradeCard_Client$Lost, _p10));
+				var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$Post, task);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{collection: nextCollection, cardId: _elm_lang$core$Maybe$Nothing}),
+					_1: command
+				};
+		}
+	});
 var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$html$Html$program(
 	{init: _fifth_postulate$trade_card$TradeCard_Client$init, update: _fifth_postulate$trade_card$TradeCard_Client$update, view: _fifth_postulate$trade_card$TradeCard_Client$view, subscriptions: _fifth_postulate$trade_card$TradeCard_Client$subscriptions})();
-var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
 
 var Elm = {};
 Elm['TradeCard'] = Elm['TradeCard'] || {};

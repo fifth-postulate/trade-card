@@ -71,6 +71,20 @@ encoder value =
         ]
 
 
+encodeEvent : EventType -> Card.Card -> Encode.Value
+encodeEvent eventType card =
+    Encode.object
+        [
+          ("type", Encode.string (toString eventType))
+        , ("cardId", Encode.int card.id)
+        ]
+
+type EventType =
+      Collected
+    | Traded
+    | Lost
+
+
 update : Message -> Model -> (Model, Cmd Message)
 update message model =
     case message of
@@ -114,10 +128,14 @@ update message model =
                     let
                         card : Card.Card
                         card = { id = id }
+
+                        task = (Pouchdb.post model.localDb (encodeEvent Collected card))
+
+                        command = Task.attempt Post task
                     in
                         case Collection.collect card model.collection of
                             Ok nextCollection ->
-                                ({ model | collection = nextCollection, cardId = Nothing }, Cmd.none)
+                                ({ model | collection = nextCollection, cardId = Nothing }, command)
 
                             Err _ ->
                                 (model, Cmd.none)
@@ -126,26 +144,39 @@ update message model =
                     (model, Cmd.none)
 
         Collect card ->
-            case Collection.collect card model.collection of
-                Ok nextCollection ->
-                    ({ model | collection = nextCollection, cardId = Nothing }, Cmd.none)
+            let
+                task = (Pouchdb.post model.localDb (encodeEvent Collected card))
 
-                Err _ ->
-                    (model, Cmd.none)
+                command = Task.attempt Post task
+            in
+                case Collection.collect card model.collection of
+                    Ok nextCollection ->
+                        ({ model | collection = nextCollection, cardId = Nothing }, command)
+
+                    Err _ ->
+                        (model, Cmd.none)
 
         Trade card ->
             let
+                task = (Pouchdb.post model.localDb (encodeEvent Traded card))
+
+                command = Task.attempt Post task
+
                 nextCollection =
                     Collection.remove card model.collection
             in
-                ({ model | collection = nextCollection, cardId = Nothing }, Cmd.none)
+                ({ model | collection = nextCollection, cardId = Nothing }, command)
 
         Remove card ->
             let
+                task = (Pouchdb.post model.localDb (encodeEvent Lost card))
+
+                command = Task.attempt Post task
+
                 nextCollection =
                     Collection.remove card model.collection
             in
-                ({ model | collection = nextCollection, cardId = Nothing }, Cmd.none)
+                ({ model | collection = nextCollection, cardId = Nothing }, command)
 
 
 unpack : (e -> b) -> (a -> b) -> Result e a -> b
