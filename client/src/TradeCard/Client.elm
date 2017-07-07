@@ -10,6 +10,7 @@ import TradeCard.View as View
 
 import Pouchdb
 import Json.Encode as Encode
+import Json.Decode as Decode
 import Task
 
 
@@ -24,9 +25,22 @@ main =
         }
 
 
-init : (Model, Cmd msg)
+init : (Model, Cmd Message)
 init =
-    (emptyModel 1 15 , Cmd.none)
+    let
+        localDb =
+            Pouchdb.db "card-events" Pouchdb.dbOptions
+
+        request =
+            Pouchdb.allDocsRequest
+                |> (Pouchdb.include_docs True)
+
+        task =
+            Pouchdb.allDocs localDb request
+
+        command = Task.attempt History task
+    in
+        (emptyModel localDb 1 15, command)
 
 
 type alias Model =
@@ -38,17 +52,15 @@ type alias Model =
     }
 
 
-emptyModel : Int -> Int -> Model
-emptyModel low high =
-    let
-        localDb = Pouchdb.db "card-events" Pouchdb.dbOptions
-    in
-        {
-          message = Nothing
-        , localDb = localDb
-        , cardId = Nothing
-        , collection = Collection.empty low high
-        }
+emptyModel : Pouchdb.Pouchdb -> Int -> Int -> Model
+emptyModel localDb low high =
+    {
+      message = Nothing
+    , localDb = localDb
+    , cardId = Nothing
+    , collection = Collection.empty low high
+    }
+
 
 type Message =
       DoNothing
@@ -58,20 +70,7 @@ type Message =
     | Trade Card.Card
     | Remove Card.Card
     | Post (Result Pouchdb.Fail Pouchdb.Post)
-
-
-encodeEvent : EventType -> Card.Card -> Encode.Value
-encodeEvent eventType card =
-    Encode.object
-        [
-          ("type", Encode.string (toString eventType))
-        , ("cardId", Encode.int card.id)
-        ]
-
-type EventType =
-      Collected
-    | Traded
-    | Lost
+    | History (Result Pouchdb.Fail (Pouchdb.AllDocs Encode.Value))
 
 
 update : Message -> Model -> (Model, Cmd Message)
@@ -90,6 +89,35 @@ update message model =
             in
                 ({ model | message = Just unpackedMessage }, Cmd.none)
 
+        History msg ->
+            let
+                onError model msg =
+                    (model, Cmd.none)
+
+                onSuccess model msg =
+                    let
+                        filterMapFun aDoc =
+                            case aDoc.doc of
+                                Just document ->
+                                    case Decode.decodeValue eventDecoder document of
+                                        Ok event ->
+                                            Just event
+
+                                        Err _ ->
+                                            Nothing
+
+                                Nothing ->
+                                    Nothing
+
+                        events =
+                            List.filterMap filterMapFun msg.docs
+
+                        updatedCollection =
+                            List.foldr applyEvent model.collection events
+                    in
+                        ({ model | collection = updatedCollection }, Cmd.none)
+            in
+                unpack (onError model) (onSuccess model) msg
 
         UpdateCardId representation ->
             let
@@ -110,7 +138,7 @@ update message model =
                         card : Card.Card
                         card = { id = id }
 
-                        task = (Pouchdb.post model.localDb (encodeEvent Collected card))
+                        task = (Pouchdb.post model.localDb (encodeEvent (Collected card)))
 
                         command = Task.attempt Post task
                     in
@@ -126,7 +154,7 @@ update message model =
 
         Collect card ->
             let
-                task = (Pouchdb.post model.localDb (encodeEvent Collected card))
+                task = (Pouchdb.post model.localDb (encodeEvent (Collected card)))
 
                 command = Task.attempt Post task
             in
@@ -139,7 +167,7 @@ update message model =
 
         Trade card ->
             let
-                task = (Pouchdb.post model.localDb (encodeEvent Traded card))
+                task = (Pouchdb.post model.localDb (encodeEvent (Traded card)))
 
                 command = Task.attempt Post task
 
@@ -150,7 +178,7 @@ update message model =
 
         Remove card ->
             let
-                task = (Pouchdb.post model.localDb (encodeEvent Lost card))
+                task = (Pouchdb.post model.localDb (encodeEvent (Lost card)))
 
                 command = Task.attempt Post task
 
@@ -158,6 +186,79 @@ update message model =
                     Collection.remove card model.collection
             in
                 ({ model | collection = nextCollection, cardId = Nothing }, command)
+
+
+encodeEvent : EventType -> Encode.Value
+encodeEvent eventType =
+    let
+        (cardType, cardId) =
+            case eventType of
+                Collected card ->
+                    ("collected", card.id)
+
+                Traded card ->
+                    ("traded", card.id)
+
+                Lost card ->
+                    ("lost", card.id)
+    in
+        Encode.object
+            [
+              ("type", Encode.string cardType)
+            , ("cardId", Encode.int cardId)
+            ]
+
+
+type EventType =
+      Collected Card.Card
+    | Traded Card.Card
+    | Lost Card.Card
+
+
+eventDecoder : Decode.Decoder EventType
+eventDecoder =
+    let
+        cardEventMapper : String -> Int -> EventType
+        cardEventMapper eventType cardId =
+            let
+                card = { id = cardId }
+            in
+                case eventType of
+                    "collected" ->
+                        Collected card
+
+                    "traded" ->
+                        Traded card
+
+                    "lost" ->
+                        Lost card
+
+                    _ ->
+                        Lost card -- TODO this should be improved
+
+    in
+        Decode.map2
+            cardEventMapper
+                (Decode.field "type" Decode.string)
+                (Decode.field "cardId" Decode.int)
+
+
+applyEvent : EventType -> Collection.Collection -> Collection.Collection
+applyEvent event collection =
+    case event of
+        Collected card ->
+            case Collection.collect card collection of
+                Ok nextCollection ->
+                    nextCollection
+
+                Err _ ->
+                    collection
+
+        Traded card ->
+            Collection.remove card collection
+
+        Lost card ->
+            Collection.remove card collection
 
 
 unpack : (e -> b) -> (a -> b) -> Result e a -> b
