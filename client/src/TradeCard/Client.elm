@@ -42,7 +42,7 @@ type alias Model =
 emptyModel : Int -> Int -> Model
 emptyModel low high =
     let
-        localDb = Pouchdb.db "try-output" Pouchdb.dbOptions
+        localDb = Pouchdb.db "card-events" Pouchdb.dbOptions
     in
         {
           message = Nothing
