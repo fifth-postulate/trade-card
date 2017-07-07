@@ -33,7 +33,6 @@ type alias Model =
     {
       message : Maybe String
     , localDb : Pouchdb.Pouchdb
-    , synchronize: Bool
     , cardId: Maybe Int
     , collection: Collection.Collection
     }
@@ -47,28 +46,18 @@ emptyModel low high =
         {
           message = Nothing
         , localDb = localDb
-        , synchronize = False
         , cardId = Nothing
         , collection = Collection.empty low high
         }
 
 type Message =
       DoNothing
-    | ToggleSychronisation Bool
     | UpdateCardId String
     | AddToCollection
     | Collect Card.Card
     | Trade Card.Card
     | Remove Card.Card
     | Post (Result Pouchdb.Fail Pouchdb.Post)
-
-
-encoder : Bool -> Encode.Value
-encoder value =
-    Encode.object
-        [
-          ("value", Encode.bool value)
-        ]
 
 
 encodeEvent : EventType -> Card.Card -> Encode.Value
@@ -90,14 +79,6 @@ update message model =
     case message of
         DoNothing ->
             (model, Cmd.none)
-
-        ToggleSychronisation value ->
-            let
-                task = (Pouchdb.post model.localDb (encoder value))
-
-                command = Task.attempt Post task
-            in
-                ({ model | synchronize = value }, command)
 
         Post msg ->
             let
@@ -223,12 +204,6 @@ view model =
                        , Event.onInput UpdateCardId
                        ] []
                   , Html.button [ Event.onClick AddToCollection ] [ Html.text "collect" ]
-                  , Html.input
-                      [
-                        Attribute.type_ "checkbox"
-                      , Attribute.checked model.synchronize
-                      , Event.onCheck ToggleSychronisation
-                      ] []
                   ]
             , View.collectionView collect lose trade collect model.collection
             ]
