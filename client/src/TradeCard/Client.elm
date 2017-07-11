@@ -304,7 +304,6 @@ view model =
                        , Attribute.value inputValue
                        , Event.onInput UpdateCardId
                        ] []
-                  , Html.button [ Event.onClick AddToCollection ] [ Html.text "collect" ]
                   ]
             , View.collectionView collect lose trade collect model.collection
             ]

@@ -9983,22 +9983,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 								}
 							},
 							{ctor: '[]'}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$button,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onClick(_fifth_postulate$trade_card$TradeCard_Client$AddToCollection),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('collect'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}
+						_1: {ctor: '[]'}
 					}),
 				_1: {
 					ctor: '::',
