@@ -65,7 +65,6 @@ emptyModel localDb low high =
 type Message =
       DoNothing
     | UpdateCardId String
-    | AddToCollection
     | Collect Card.Card
     | Trade Card.Card
     | Remove Card.Card
@@ -129,28 +128,6 @@ update message model =
 
                     Err _ ->
                         (model, Cmd.none)
-
-        AddToCollection ->
-            case model.cardId of
-                Just id  ->
-
-                    let
-                        card : Card.Card
-                        card = { id = id }
-
-                        task = (Pouchdb.post model.localDb (encodeEvent (Collected card)))
-
-                        command = Task.attempt Post task
-                    in
-                        case Collection.collect card model.collection of
-                            Ok nextCollection ->
-                                ({ model | collection = nextCollection, cardId = Nothing }, command)
-
-                            Err _ ->
-                                (model, Cmd.none)
-
-                Nothing ->
-                    (model, Cmd.none)
 
         Collect card ->
             let
