@@ -8965,8 +8965,24 @@ var _fifth_postulate$trade_card$TradeCard_View$viewCardList = F3(
 				A2(_fifth_postulate$trade_card$TradeCard_View$viewCard, primary, secondary),
 				cards));
 	});
-var _fifth_postulate$trade_card$TradeCard_View$collectionView = F5(
-	function (collectedMessage, lostMessage, doubleMessage, missingMessage, collection) {
+var _fifth_postulate$trade_card$TradeCard_View$collectionView = F6(
+	function (target, collectedMessage, lostMessage, doubleMessage, missingMessage, collection) {
+		var predicate = function (card) {
+			var _p3 = target;
+			if (_p3.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.eq(card.id, _p3._0);
+			} else {
+				return true;
+			}
+		};
+		var filter = _elm_lang$core$List$filter(predicate);
+		var filterOnFirst = function () {
+			var predicateOnFirst = function (_p4) {
+				var _p5 = _p4;
+				return predicate(_p5._0);
+			};
+			return _elm_lang$core$List$filter(predicateOnFirst);
+		}();
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -8980,20 +8996,23 @@ var _fifth_postulate$trade_card$TradeCard_View$collectionView = F5(
 					_fifth_postulate$trade_card$TradeCard_View$viewCardList,
 					collectedMessage,
 					lostMessage,
-					_fifth_postulate$trade_card$TradeCard_Collection$collected(collection)),
+					filter(
+						_fifth_postulate$trade_card$TradeCard_Collection$collected(collection))),
 				_1: {
 					ctor: '::',
 					_0: A2(
 						_fifth_postulate$trade_card$TradeCard_View$duplicityList,
 						doubleMessage,
-						_fifth_postulate$trade_card$TradeCard_Collection$doubles(collection)),
+						filterOnFirst(
+							_fifth_postulate$trade_card$TradeCard_Collection$doubles(collection))),
 					_1: {
 						ctor: '::',
 						_0: A3(
 							_fifth_postulate$trade_card$TradeCard_View$viewCardList,
 							missingMessage,
 							_elm_lang$core$Maybe$Nothing,
-							_fifth_postulate$trade_card$TradeCard_Collection$missing(collection)),
+							filter(
+								_fifth_postulate$trade_card$TradeCard_Collection$missing(collection))),
 						_1: {ctor: '[]'}
 					}
 				}
@@ -9986,7 +10005,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 					}),
 				_1: {
 					ctor: '::',
-					_0: A5(_fifth_postulate$trade_card$TradeCard_View$collectionView, collect, lose, trade, collect, model.collection),
+					_0: A6(_fifth_postulate$trade_card$TradeCard_View$collectionView, model.cardId, collect, lose, trade, collect, model.collection),
 					_1: {ctor: '[]'}
 				}
 			}

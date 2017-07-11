@@ -282,7 +282,7 @@ view model =
                        , Event.onInput UpdateCardId
                        ] []
                   ]
-            , View.collectionView collect lose trade collect model.collection
+            , View.collectionView model.cardId collect lose trade collect model.collection
             ]
 
 

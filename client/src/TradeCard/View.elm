@@ -8,15 +8,36 @@ import TradeCard.Card as Card
 import TradeCard.Collection as Collection
 
 
-collectionView : (Card.Card -> msg) -> Maybe (Card.Card -> msg) -> (Card.Card -> msg) -> (Card.Card -> msg) ->  Collection.Collection -> Html.Html msg
-collectionView collectedMessage lostMessage doubleMessage missingMessage collection =
-    Html.div
-        [ Attribute.class "card collection" ]
-        [
-          viewCardList collectedMessage lostMessage (Collection.collected collection)
-        , duplicityList doubleMessage (Collection.doubles collection)
-        , viewCardList missingMessage Nothing (Collection.missing collection)
-        ]
+collectionView : Maybe Int -> (Card.Card -> msg) -> Maybe (Card.Card -> msg) -> (Card.Card -> msg) -> (Card.Card -> msg) ->  Collection.Collection -> Html.Html msg
+collectionView target collectedMessage lostMessage doubleMessage missingMessage collection =
+    let
+        predicate : Card.Card -> Bool
+        predicate card =
+            case target of
+                Just id ->
+                    card.id == id
+
+                Nothing ->
+                    True
+
+        filter =
+            List.filter predicate
+
+        filterOnFirst =
+            let
+                predicateOnFirst : (Card.Card, Int) -> Bool
+                predicateOnFirst (c, _) =
+                    predicate c
+            in
+                List.filter predicateOnFirst
+    in
+        Html.div
+            [ Attribute.class "card collection" ]
+            [
+              viewCardList collectedMessage lostMessage (filter (Collection.collected collection))
+            , duplicityList doubleMessage (filterOnFirst (Collection.doubles collection))
+            , viewCardList missingMessage Nothing (filter (Collection.missing collection))
+            ]
 
 
 viewCardList : (Card.Card -> msg) -> Maybe (Card.Card -> msg)-> List Card.Card -> Html.Html msg
