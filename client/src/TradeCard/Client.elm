@@ -113,10 +113,34 @@ update message model =
                         events =
                             List.filterMap filterMapFun msg.docs
 
+                        maxId : CardEvent -> Int -> Int
+                        maxId event current =
+                            let
+                                id =
+                                    case event of
+                                        Collected id _ ->
+                                            id
+
+                                        Traded id _ ->
+                                            id
+
+                                        Lost id _ ->
+                                            id
+                            in
+                                max current id
+
+                        maxEventId =
+                            List.foldr maxId 0 events
+
+                        nextEventId =
+                            1 + maxEventId
+
                         updatedCollection =
                             List.foldr applyEvent model.collection events
                     in
-                        ({ model | collection = updatedCollection }, Cmd.none)
+                        ({ model |
+                                 nextEventId = nextEventId
+                               , collection = updatedCollection }, Cmd.none)
             in
                 unpack (onError model) (onSuccess model) msg
 
@@ -125,99 +149,156 @@ update message model =
 
         Collect card ->
             let
-                task = (Pouchdb.post model.localDb (encodeEvent (Collected card)))
+                task = (Pouchdb.post model.localDb (encodeEvent (Collected model.nextEventId card)))
 
                 command = Task.attempt Post task
             in
                 case Collection.collect card model.collection of
                     Ok nextCollection ->
-                        ({ model | collection = nextCollection, cardId = "" }, command)
+                        ({ model |
+                           collection = nextCollection
+                         , nextEventId = model.nextEventId + 1
+                         , cardId = "" }, command)
 
                     Err _ ->
                         (model, Cmd.none)
 
         Trade card ->
             let
-                task = (Pouchdb.post model.localDb (encodeEvent (Traded card)))
+                task = (Pouchdb.post model.localDb (encodeEvent (Traded model.nextEventId card)))
 
                 command = Task.attempt Post task
 
                 nextCollection =
                     Collection.remove card model.collection
             in
-                ({ model | collection = nextCollection, cardId = "" }, command)
+                ({ model |
+                   collection = nextCollection
+                 , nextEventId = model.nextEventId + 1
+                 , cardId = "" }, command)
 
         Remove card ->
             let
-                task = (Pouchdb.post model.localDb (encodeEvent (Lost card)))
+                task = (Pouchdb.post model.localDb (encodeEvent (Lost model.nextEventId card)))
 
                 command = Task.attempt Post task
 
                 nextCollection =
                     Collection.remove card model.collection
             in
-                ({ model | collection = nextCollection, cardId = "" }, command)
+                ({ model |
+                   collection = nextCollection
+                       , nextEventId = model.nextEventId + 1
+                 , cardId = "" }, command)
 
 
 encodeEvent : CardEvent -> Encode.Value
 encodeEvent eventType =
     let
-        (cardType, cardId) =
+        (eventId, cardType, cardId) =
             case eventType of
-                Collected card ->
-                    ("collected", card.id)
+                Collected id card ->
+                    (id, "collected", card.id)
 
-                Traded card ->
-                    ("traded", card.id)
+                Traded id card ->
+                    (id, "traded", card.id)
 
-                Lost card ->
-                    ("lost", card.id)
+                Lost id card ->
+                    (id, "lost", card.id)
     in
         Encode.object
             [
-              ("type", Encode.string cardType)
+              ("_id", Encode.string (zeroPad 15 eventId))
+            , ("type", Encode.string cardType)
             , ("cardId", Encode.int cardId)
             ]
 
 
+zeroPad: Int -> Int -> String
+zeroPad padLength n =
+    let
+        representation = toString n
+
+        padding = pad "0" (padLength - (String.length representation))
+    in
+        padding ++ representation
+
+
+pad : String -> Int -> String
+pad symbol n =
+    if n <= 0 then
+        ""
+    else
+        symbol ++ (pad symbol (n - (String.length symbol)))
+
+
 type CardEvent =
-      Collected Card.Card
-    | Traded Card.Card
-    | Lost Card.Card
+      Collected Int Card.Card
+    | Traded Int Card.Card
+    | Lost Int Card.Card
 
 
 eventDecoder : Decode.Decoder CardEvent
 eventDecoder =
     let
-        cardEventMapper : String -> Int -> CardEvent
-        cardEventMapper eventType cardId =
+        cardEventMapper : String -> String -> Int -> CardEvent
+        cardEventMapper eventIdRepresentation eventType cardId =
             let
+                stripped = stripZero eventIdRepresentation
+
+                eventId =
+                    case String.toInt stripped of
+                        Ok id ->
+                            id
+
+                        Err _ ->
+                            0 -- TODO improve
+
                 card = { id = cardId }
             in
                 case eventType of
                     "collected" ->
-                        Collected card
+                        Collected eventId card
 
                     "traded" ->
-                        Traded card
+                        Traded eventId card
 
                     "lost" ->
-                        Lost card
+                        Lost eventId card
 
                     _ ->
-                        Lost card -- TODO this should be improved
+                        Lost 0 card -- TODO this should be improved
 
     in
-        Decode.map2
+        Decode.map3
             cardEventMapper
+                (Decode.field "_id" Decode.string)
                 (Decode.field "type" Decode.string)
                 (Decode.field "cardId" Decode.int)
+
+
+stripZero : String -> String
+stripZero word =
+    dropWhile (\c -> c == '0') word
+
+
+dropWhile : (Char -> Bool) -> String -> String
+dropWhile predicate word =
+    case String.uncons word of
+        Just (head, tail) ->
+            if (predicate head) then
+                dropWhile predicate tail
+            else
+                word
+
+        Nothing ->
+            word
 
 
 applyEvent : CardEvent -> Collection.Collection -> Collection.Collection
 applyEvent event collection =
     case event of
-        Collected card ->
+        Collected id card ->
             case Collection.collect card collection of
                 Ok nextCollection ->
                     nextCollection
@@ -225,10 +306,10 @@ applyEvent event collection =
                 Err _ ->
                     collection
 
-        Traded card ->
+        Traded id card ->
             Collection.remove card collection
 
-        Lost card ->
+        Lost id card ->
             Collection.remove card collection
 
 
