@@ -48,6 +48,7 @@ type alias Model =
       message : Maybe String
     , localDb : Pouchdb.Pouchdb
     , cardId: String
+    , nextEventId: Int
     , collection: Collection.Collection
     }
 
@@ -58,6 +59,7 @@ emptyModel localDb low high =
       message = Nothing
     , localDb = localDb
     , cardId = ""
+    , nextEventId = 1
     , collection = Collection.empty low high
     }
 

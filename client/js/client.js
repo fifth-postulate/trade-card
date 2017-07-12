@@ -9904,12 +9904,13 @@ var _fifth_postulate$trade_card$TradeCard_Client$emptyModel = F3(
 			message: _elm_lang$core$Maybe$Nothing,
 			localDb: localDb,
 			cardId: '',
+			nextEventId: 1,
 			collection: A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, low, high)
 		};
 	});
-var _fifth_postulate$trade_card$TradeCard_Client$Model = F4(
-	function (a, b, c, d) {
-		return {message: a, localDb: b, cardId: c, collection: d};
+var _fifth_postulate$trade_card$TradeCard_Client$Model = F5(
+	function (a, b, c, d, e) {
+		return {message: a, localDb: b, cardId: c, nextEventId: d, collection: e};
 	});
 var _fifth_postulate$trade_card$TradeCard_Client$History = function (a) {
 	return {ctor: 'History', _0: a};
