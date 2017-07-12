@@ -157,7 +157,7 @@ update message model =
                 ({ model | collection = nextCollection, cardId = "" }, command)
 
 
-encodeEvent : EventType -> Encode.Value
+encodeEvent : CardEvent -> Encode.Value
 encodeEvent eventType =
     let
         (cardType, cardId) =
@@ -178,16 +178,16 @@ encodeEvent eventType =
             ]
 
 
-type EventType =
+type CardEvent =
       Collected Card.Card
     | Traded Card.Card
     | Lost Card.Card
 
 
-eventDecoder : Decode.Decoder EventType
+eventDecoder : Decode.Decoder CardEvent
 eventDecoder =
     let
-        cardEventMapper : String -> Int -> EventType
+        cardEventMapper : String -> Int -> CardEvent
         cardEventMapper eventType cardId =
             let
                 card = { id = cardId }
@@ -212,7 +212,7 @@ eventDecoder =
                 (Decode.field "cardId" Decode.int)
 
 
-applyEvent : EventType -> Collection.Collection -> Collection.Collection
+applyEvent : CardEvent -> Collection.Collection -> Collection.Collection
 applyEvent event collection =
     case event of
         Collected card ->
