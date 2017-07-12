@@ -8,12 +8,16 @@ import TradeCard.Card as Card
 import TradeCard.Collection as Collection
 
 
-collectionView : Maybe Int -> (Card.Card -> msg) -> Maybe (Card.Card -> msg) -> (Card.Card -> msg) -> (Card.Card -> msg) ->  Collection.Collection -> Html.Html msg
+collectionView : String -> (Card.Card -> msg) -> Maybe (Card.Card -> msg) -> (Card.Card -> msg) -> (Card.Card -> msg) ->  Collection.Collection -> Html.Html msg
 collectionView target collectedMessage lostMessage doubleMessage missingMessage collection =
     let
+        targetId =
+            String.toInt target
+            |> Result.toMaybe
+
         predicate : Card.Card -> Bool
         predicate card =
-            case target of
+            case targetId of
                 Just id ->
                     card.id == id
 

@@ -47,7 +47,7 @@ type alias Model =
     {
       message : Maybe String
     , localDb : Pouchdb.Pouchdb
-    , cardId: Maybe Int
+    , cardId: String
     , collection: Collection.Collection
     }
 
@@ -57,7 +57,7 @@ emptyModel localDb low high =
     {
       message = Nothing
     , localDb = localDb
-    , cardId = Nothing
+    , cardId = ""
     , collection = Collection.empty low high
     }
 
@@ -119,15 +119,7 @@ update message model =
                 unpack (onError model) (onSuccess model) msg
 
         UpdateCardId representation ->
-            let
-                id = String.toInt representation
-            in
-                case id of
-                    Ok cardId ->
-                        ({ model | cardId = Just cardId }, Cmd.none)
-
-                    Err _ ->
-                        (model, Cmd.none)
+            ({ model | cardId = representation }, Cmd.none)
 
         Collect card ->
             let
@@ -137,7 +129,7 @@ update message model =
             in
                 case Collection.collect card model.collection of
                     Ok nextCollection ->
-                        ({ model | collection = nextCollection, cardId = Nothing }, command)
+                        ({ model | collection = nextCollection, cardId = "" }, command)
 
                     Err _ ->
                         (model, Cmd.none)
@@ -151,7 +143,7 @@ update message model =
                 nextCollection =
                     Collection.remove card model.collection
             in
-                ({ model | collection = nextCollection, cardId = Nothing }, command)
+                ({ model | collection = nextCollection, cardId = "" }, command)
 
         Remove card ->
             let
@@ -162,7 +154,7 @@ update message model =
                 nextCollection =
                     Collection.remove card model.collection
             in
-                ({ model | collection = nextCollection, cardId = Nothing }, command)
+                ({ model | collection = nextCollection, cardId = "" }, command)
 
 
 encodeEvent : EventType -> Encode.Value
@@ -250,11 +242,6 @@ unpack errFunc okFunc result =
 view : Model -> Html.Html Message
 view model =
     let
-        inputValue =
-            model.cardId
-            |> Maybe.map toString
-            |> Maybe.withDefault ""
-
         message =
             model.message
                 |> Maybe.withDefault ""
@@ -278,7 +265,7 @@ view model =
                     Html.input
                        [
                          Attribute.type_ "input"
-                       , Attribute.value inputValue
+                       , Attribute.value model.cardId
                        , Event.onInput UpdateCardId
                        ] []
                   ]
