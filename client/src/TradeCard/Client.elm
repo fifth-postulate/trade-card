@@ -100,12 +100,7 @@ update message model =
                         filterMapFun aDoc =
                             case aDoc.doc of
                                 Just document ->
-                                    case Decode.decodeValue eventDecoder document of
-                                        Ok event ->
-                                            Just event
-
-                                        Err _ ->
-                                            Nothing
+                                    Result.toMaybe (Decode.decodeValue eventDecoder document)
 
                                 Nothing ->
                                     Nothing
