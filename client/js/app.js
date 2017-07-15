@@ -1,6 +1,9 @@
 (function(Elm){
     var container = document.getElementById('container');
-    var app = Elm.TradeCard.Client.embed(container);
+    var app = Elm.TradeCard.Client.embed(container, {
+        lowestCard: 1,
+        highestCard: 15
+    });
 
     window.destroyDb = function(){
         var db = new PouchDB('card-events');

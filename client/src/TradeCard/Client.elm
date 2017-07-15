@@ -14,9 +14,9 @@ import Json.Decode as Decode
 import Task
 
 
-main : Program Never Model Message
+main : Program Flags Model Message
 main =
-    Html.program
+    Html.programWithFlags
         {
           init = init
         , update = update
@@ -25,8 +25,8 @@ main =
         }
 
 
-init : (Model, Cmd Message)
-init =
+init : Flags -> (Model, Cmd Message)
+init flags =
     let
         localDb =
             Pouchdb.db "card-events" Pouchdb.dbOptions
@@ -40,7 +40,14 @@ init =
 
         command = Task.attempt History task
     in
-        (emptyModel localDb 1 15, command)
+        (emptyModel localDb flags.lowestCard flags.highestCard, command)
+
+
+type alias Flags =
+    {
+      lowestCard: Int
+    , highestCard: Int
+    }
 
 
 type alias Model =

@@ -9966,6 +9966,10 @@ var _fifth_postulate$trade_card$TradeCard_Client$emptyModel = F3(
 			collection: A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, low, high)
 		};
 	});
+var _fifth_postulate$trade_card$TradeCard_Client$Flags = F2(
+	function (a, b) {
+		return {lowestCard: a, highestCard: b};
+	});
 var _fifth_postulate$trade_card$TradeCard_Client$Model = F4(
 	function (a, b, c, d) {
 		return {localDb: a, cardId: b, nextEventId: c, collection: d};
@@ -9973,17 +9977,17 @@ var _fifth_postulate$trade_card$TradeCard_Client$Model = F4(
 var _fifth_postulate$trade_card$TradeCard_Client$History = function (a) {
 	return {ctor: 'History', _0: a};
 };
-var _fifth_postulate$trade_card$TradeCard_Client$init = function () {
+var _fifth_postulate$trade_card$TradeCard_Client$init = function (flags) {
 	var request = A2(_powet$elm_pouchdb$Pouchdb$include_docs, true, _powet$elm_pouchdb$Pouchdb$allDocsRequest);
 	var localDb = A2(_powet$elm_pouchdb$Pouchdb$db, 'card-events', _powet$elm_pouchdb$Pouchdb$dbOptions);
 	var task = A2(_powet$elm_pouchdb$Pouchdb$allDocs, localDb, request);
 	var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$History, task);
 	return {
 		ctor: '_Tuple2',
-		_0: A3(_fifth_postulate$trade_card$TradeCard_Client$emptyModel, localDb, 1, 15),
+		_0: A3(_fifth_postulate$trade_card$TradeCard_Client$emptyModel, localDb, flags.lowestCard, flags.highestCard),
 		_1: command
 	};
-}();
+};
 var _fifth_postulate$trade_card$TradeCard_Client$Post = function (a) {
 	return {ctor: 'Post', _0: a};
 };
@@ -10221,8 +10225,20 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 				};
 		}
 	});
-var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$html$Html$program(
-	{init: _fifth_postulate$trade_card$TradeCard_Client$init, update: _fifth_postulate$trade_card$TradeCard_Client$update, view: _fifth_postulate$trade_card$TradeCard_Client$view, subscriptions: _fifth_postulate$trade_card$TradeCard_Client$subscriptions})();
+var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$html$Html$programWithFlags(
+	{init: _fifth_postulate$trade_card$TradeCard_Client$init, update: _fifth_postulate$trade_card$TradeCard_Client$update, view: _fifth_postulate$trade_card$TradeCard_Client$view, subscriptions: _fifth_postulate$trade_card$TradeCard_Client$subscriptions})(
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (highestCard) {
+			return A2(
+				_elm_lang$core$Json_Decode$andThen,
+				function (lowestCard) {
+					return _elm_lang$core$Json_Decode$succeed(
+						{highestCard: highestCard, lowestCard: lowestCard});
+				},
+				A2(_elm_lang$core$Json_Decode$field, 'lowestCard', _elm_lang$core$Json_Decode$int));
+		},
+		A2(_elm_lang$core$Json_Decode$field, 'highestCard', _elm_lang$core$Json_Decode$int)));
 
 var Elm = {};
 Elm['TradeCard'] = Elm['TradeCard'] || {};
