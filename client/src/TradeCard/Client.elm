@@ -45,8 +45,7 @@ init =
 
 type alias Model =
     {
-      message : Maybe String
-    , localDb : Pouchdb.Pouchdb
+      localDb : Pouchdb.Pouchdb
     , cardId: String
     , nextEventId: Int
     , collection: Collection.Collection
@@ -56,8 +55,7 @@ type alias Model =
 emptyModel : Pouchdb.Pouchdb -> Int -> Int -> Model
 emptyModel localDb low high =
     {
-      message = Nothing
-    , localDb = localDb
+      localDb = localDb
     , cardId = ""
     , nextEventId = 1
     , collection = Collection.empty low high
@@ -88,7 +86,7 @@ update message model =
                         (\m -> String.append "saved message with revision: " m.rev)
                         msg
             in
-                ({ model | message = Just unpackedMessage }, Cmd.none)
+                (model, Cmd.none)
 
         History msg ->
             let
@@ -320,10 +318,6 @@ unpack errFunc okFunc result =
 view : Model -> Html.Html Message
 view model =
     let
-        message =
-            model.message
-                |> Maybe.withDefault ""
-
         trade =
             \c -> Trade c
 
@@ -336,8 +330,7 @@ view model =
         Html.div
             []
             [
-              Html.div [] [ Html.span [] [ Html.text message ] ]
-            , Html.div
+              Html.div
                   [ Attribute.class "collector"]
                   [
                     Html.input

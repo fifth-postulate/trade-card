@@ -9960,16 +9960,15 @@ var _fifth_postulate$trade_card$TradeCard_Client$encodeEvent = function (eventTy
 var _fifth_postulate$trade_card$TradeCard_Client$emptyModel = F3(
 	function (localDb, low, high) {
 		return {
-			message: _elm_lang$core$Maybe$Nothing,
 			localDb: localDb,
 			cardId: '',
 			nextEventId: 1,
 			collection: A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, low, high)
 		};
 	});
-var _fifth_postulate$trade_card$TradeCard_Client$Model = F5(
-	function (a, b, c, d, e) {
-		return {message: a, localDb: b, cardId: c, nextEventId: d, collection: e};
+var _fifth_postulate$trade_card$TradeCard_Client$Model = F4(
+	function (a, b, c, d) {
+		return {localDb: a, cardId: b, nextEventId: c, collection: d};
 	});
 var _fifth_postulate$trade_card$TradeCard_Client$History = function (a) {
 	return {ctor: 'History', _0: a};
@@ -10011,7 +10010,6 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 	var trade = function (c) {
 		return _fifth_postulate$trade_card$TradeCard_Client$Trade(c);
 	};
-	var message = A2(_elm_lang$core$Maybe$withDefault, '', model.message);
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
@@ -10019,53 +10017,35 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 			ctor: '::',
 			_0: A2(
 				_elm_lang$html$Html$div,
-				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('collector'),
+					_1: {ctor: '[]'}
+				},
 				{
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$span,
-						{ctor: '[]'},
+						_elm_lang$html$Html$input,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(message),
-							_1: {ctor: '[]'}
-						}),
+							_0: _elm_lang$html$Html_Attributes$type_('input'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$value(model.cardId),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onInput(_fifth_postulate$trade_card$TradeCard_Client$UpdateCardId),
+									_1: {ctor: '[]'}
+								}
+							}
+						},
+						{ctor: '[]'}),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
 				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('collector'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$input,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$type_('input'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$value(model.cardId),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$html$Html_Events$onInput(_fifth_postulate$trade_card$TradeCard_Client$UpdateCardId),
-										_1: {ctor: '[]'}
-									}
-								}
-							},
-							{ctor: '[]'}),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A6(_fifth_postulate$trade_card$TradeCard_View$collectionView, model.cardId, collect, lose, trade, collect, model.collection),
-					_1: {ctor: '[]'}
-				}
+				_0: A6(_fifth_postulate$trade_card$TradeCard_View$collectionView, model.cardId, collect, lose, trade, collect, model.collection),
+				_1: {ctor: '[]'}
 			}
 		});
 };
@@ -10130,15 +10110,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 						return A2(_elm_lang$core$String$append, 'saved message with revision: ', m.rev);
 					},
 					_p9._0);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							message: _elm_lang$core$Maybe$Just(unpackedMessage)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'History':
 				var onSuccess = F2(
 					function (model, msg) {
