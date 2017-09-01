@@ -1,14 +1,12 @@
 module TradeCard.Card exposing (Card, view)
 
-
 import Html
 import Html.Attributes as Attribute
 import Html.Events as Event
 
 
 type alias Card =
-    {
-      id: Int
+    { id : Int
     }
 
 
@@ -16,15 +14,14 @@ view : (Card -> msg) -> Card -> Html.Html msg
 view message card =
     let
         cardId : String
-        cardId = "card-" ++ (toString card.id)
+        cardId =
+            "card-" ++ (toString card.id)
     in
         Html.div
-            [
-              Attribute.classList [ ("card", True), (cardId, True) ]
+            [ Attribute.classList [ ( "card", True ), ( cardId, True ) ]
             , Event.onClick (message card)
             ]
-            [
-              Html.span [] [ Html.text (cardFace card) ]
+            [ Html.span [] [ Html.text (cardFace card) ]
             ]
 
 
