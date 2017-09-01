@@ -142,8 +142,22 @@ update message model =
                         nextEventId =
                             1 + maxEventId
 
+                        eventFromUser event =
+                            case event of
+                                Collected user _ _ ->
+                                    user == model.user
+
+                                Traded user _ _ ->
+                                    user == model.user
+
+                                Lost user _ _ ->
+                                    user == model.user
+
+                        userEvents =
+                            List.filter eventFromUser events
+
                         updatedCollection =
-                            List.foldr applyEvent model.collection events
+                            List.foldr applyEvent model.collection userEvents
                     in
                         ({ model |
                                  nextEventId = nextEventId
