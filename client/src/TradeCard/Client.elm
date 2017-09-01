@@ -77,7 +77,8 @@ emptyModel localDb low high user =
 type Message =
       DoNothing
     | UpdateCardId String
-    | ToggleEditUser
+    | StartEditUser
+    | StopEditUser
     | ChangeUser User.User
     | Collect Card.Card
     | Trade Card.Card
@@ -168,11 +169,24 @@ update message model =
         UpdateCardId representation ->
             ({ model | cardId = representation }, Cmd.none)
 
-        ToggleEditUser ->
-            ({ model | changingUser = not model.changingUser }, Cmd.none)
+        StartEditUser ->
+            ({ model | changingUser = True }, Cmd.none)
+
+        StopEditUser ->
+            let
+                request =
+                    Pouchdb.allDocsRequest
+                        |> (Pouchdb.include_docs True)
+
+                task =
+                    Pouchdb.allDocs model.localDb request
+
+                command = Task.attempt History task
+            in
+                (emptyModel model.localDb (Tuple.first model.collection.range) (Tuple.second model.collection.range) model.user, command)
 
         ChangeUser user ->
-            ({ model | user = user }, Cmd.none)
+            ({ model | user = user}, Cmd.none)
 
         Collect card ->
             let
@@ -387,7 +401,7 @@ view model =
                          , Event.onInput UpdateCardId
                          ] []
                     ]
-                  , [ User.view model.changingUser ToggleEditUser ChangeUser ToggleEditUser model.user ]
+                  , [ User.view model.changingUser StartEditUser ChangeUser StopEditUser model.user ]
                   ])
             , View.collectionView model.cardId collect lose trade collect model.collection
             ]

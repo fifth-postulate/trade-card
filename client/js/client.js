@@ -10067,7 +10067,8 @@ var _fifth_postulate$trade_card$TradeCard_Client$Collect = function (a) {
 var _fifth_postulate$trade_card$TradeCard_Client$ChangeUser = function (a) {
 	return {ctor: 'ChangeUser', _0: a};
 };
-var _fifth_postulate$trade_card$TradeCard_Client$ToggleEditUser = {ctor: 'ToggleEditUser'};
+var _fifth_postulate$trade_card$TradeCard_Client$StopEditUser = {ctor: 'StopEditUser'};
+var _fifth_postulate$trade_card$TradeCard_Client$StartEditUser = {ctor: 'StartEditUser'};
 var _fifth_postulate$trade_card$TradeCard_Client$UpdateCardId = function (a) {
 	return {ctor: 'UpdateCardId', _0: a};
 };
@@ -10121,7 +10122,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 							ctor: '::',
 							_0: {
 								ctor: '::',
-								_0: A5(_fifth_postulate$trade_card$TradeCard_User$view, model.changingUser, _fifth_postulate$trade_card$TradeCard_Client$ToggleEditUser, _fifth_postulate$trade_card$TradeCard_Client$ChangeUser, _fifth_postulate$trade_card$TradeCard_Client$ToggleEditUser, model.user),
+								_0: A5(_fifth_postulate$trade_card$TradeCard_User$view, model.changingUser, _fifth_postulate$trade_card$TradeCard_Client$StartEditUser, _fifth_postulate$trade_card$TradeCard_Client$ChangeUser, _fifth_postulate$trade_card$TradeCard_Client$StopEditUser, model.user),
 								_1: {ctor: '[]'}
 							},
 							_1: {ctor: '[]'}
@@ -10279,13 +10280,27 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 						{cardId: _p11._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			case 'ToggleEditUser':
+			case 'StartEditUser':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{changingUser: !model.changingUser}),
+						{changingUser: true}),
 					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'StopEditUser':
+				var request = A2(_powet$elm_pouchdb$Pouchdb$include_docs, true, _powet$elm_pouchdb$Pouchdb$allDocsRequest);
+				var task = A2(_powet$elm_pouchdb$Pouchdb$allDocs, model.localDb, request);
+				var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$History, task);
+				return {
+					ctor: '_Tuple2',
+					_0: A4(
+						_fifth_postulate$trade_card$TradeCard_Client$emptyModel,
+						model.localDb,
+						_elm_lang$core$Tuple$first(model.collection.range),
+						_elm_lang$core$Tuple$second(model.collection.range),
+						model.user),
+					_1: command
 				};
 			case 'ChangeUser':
 				return {
