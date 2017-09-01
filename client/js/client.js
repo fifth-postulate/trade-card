@@ -10014,6 +10014,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$emptyModel = F4(
 			cardId: '',
 			nextEventId: 1,
 			user: user,
+			changingUser: false,
 			collection: A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, low, high)
 		};
 	});
@@ -10021,9 +10022,9 @@ var _fifth_postulate$trade_card$TradeCard_Client$Flags = F3(
 	function (a, b, c) {
 		return {lowestCard: a, highestCard: b, user: c};
 	});
-var _fifth_postulate$trade_card$TradeCard_Client$Model = F5(
-	function (a, b, c, d, e) {
-		return {localDb: a, cardId: b, nextEventId: c, user: d, collection: e};
+var _fifth_postulate$trade_card$TradeCard_Client$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {localDb: a, cardId: b, nextEventId: c, user: d, changingUser: e, collection: f};
 	});
 var _fifth_postulate$trade_card$TradeCard_Client$History = function (a) {
 	return {ctor: 'History', _0: a};
@@ -10104,7 +10105,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 							ctor: '::',
 							_0: {
 								ctor: '::',
-								_0: A2(_fifth_postulate$trade_card$TradeCard_User$view, false, model.user),
+								_0: A2(_fifth_postulate$trade_card$TradeCard_User$view, model.changingUser, model.user),
 								_1: {ctor: '[]'}
 							},
 							_1: {ctor: '[]'}

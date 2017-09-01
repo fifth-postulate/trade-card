@@ -57,6 +57,7 @@ type alias Model =
     , cardId: String
     , nextEventId: Int
     , user: User.User
+    , changingUser: Bool
     , collection: Collection.Collection
     }
 
@@ -68,6 +69,7 @@ emptyModel localDb low high user =
     , cardId = ""
     , nextEventId = 1
     , user = user
+    , changingUser = False
     , collection = Collection.empty low high
     }
 
@@ -363,7 +365,7 @@ view model =
                          , Event.onInput UpdateCardId
                          ] []
                     ]
-                  , [ User.view False model.user ]
+                  , [ User.view model.changingUser model.user ]
                   ])
             , View.collectionView model.cardId collect lose trade collect model.collection
             ]
