@@ -77,6 +77,7 @@ emptyModel localDb low high user =
 type Message =
       DoNothing
     | UpdateCardId String
+    | EditUser
     | Collect Card.Card
     | Trade Card.Card
     | Remove Card.Card
@@ -151,6 +152,9 @@ update message model =
 
         UpdateCardId representation ->
             ({ model | cardId = representation }, Cmd.none)
+
+        EditUser ->
+            ({ model | changingUser = True }, Cmd.none)
 
         Collect card ->
             let
@@ -365,7 +369,7 @@ view model =
                          , Event.onInput UpdateCardId
                          ] []
                     ]
-                  , [ User.view model.changingUser model.user ]
+                  , [ User.view model.changingUser EditUser model.user ]
                   ])
             , View.collectionView model.cardId collect lose trade collect model.collection
             ]

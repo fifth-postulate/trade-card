@@ -9021,8 +9021,8 @@ var _fifth_postulate$trade_card$TradeCard_View$collectionView = F6(
 			});
 	});
 
-var _fifth_postulate$trade_card$TradeCard_User$view = F2(
-	function (edit, user) {
+var _fifth_postulate$trade_card$TradeCard_User$view = F3(
+	function (edit, editMessage, user) {
 		var content = edit ? A2(
 			_elm_lang$html$Html$input,
 			{
@@ -9032,7 +9032,11 @@ var _fifth_postulate$trade_card$TradeCard_User$view = F2(
 			},
 			{ctor: '[]'}) : A2(
 			_elm_lang$html$Html$span,
-			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(editMessage),
+				_1: {ctor: '[]'}
+			},
 			{
 				ctor: '::',
 				_0: _elm_lang$html$Html$text(user),
@@ -10052,6 +10056,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$Trade = function (a) {
 var _fifth_postulate$trade_card$TradeCard_Client$Collect = function (a) {
 	return {ctor: 'Collect', _0: a};
 };
+var _fifth_postulate$trade_card$TradeCard_Client$EditUser = {ctor: 'EditUser'};
 var _fifth_postulate$trade_card$TradeCard_Client$UpdateCardId = function (a) {
 	return {ctor: 'UpdateCardId', _0: a};
 };
@@ -10105,7 +10110,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 							ctor: '::',
 							_0: {
 								ctor: '::',
-								_0: A2(_fifth_postulate$trade_card$TradeCard_User$view, model.changingUser, model.user),
+								_0: A3(_fifth_postulate$trade_card$TradeCard_User$view, model.changingUser, _fifth_postulate$trade_card$TradeCard_Client$EditUser, model.user),
 								_1: {ctor: '[]'}
 							},
 							_1: {ctor: '[]'}
@@ -10249,6 +10254,14 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{cardId: _p11._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'EditUser':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{changingUser: true}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Collect':
