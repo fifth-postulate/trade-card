@@ -7,7 +7,7 @@ order to build the system move into the directory and execute the following
 command
 
 ```plain
-elm src/TradeCard/Client.elm --output js/client.js 
+elm make src/TradeCard/Client.elm --output js/client.js 
 ```
 
 This will update `client.js` with the latest developments.
