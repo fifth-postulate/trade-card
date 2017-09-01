@@ -7,14 +7,19 @@ import Html.Events as Event
 
 type alias User = String
 
-view : Bool -> msg -> String -> Html.Html msg
-view edit editMessage user =
+view : Bool -> msg -> (String -> msg) -> msg-> String -> Html.Html msg
+view edit startEditingMessage changeUserMessage stopEditingMessage user =
     let
         content =
             if edit then
-                Html.input [ Attribute.defaultValue user ] []
+                Html.input
+                    [
+                      Attribute.defaultValue user
+                    , Event.onInput changeUserMessage
+                    , Event.onBlur stopEditingMessage
+                    ] []
             else
-                Html.span [ Event.onClick editMessage ] [ Html.text user ]
+                Html.span [ Event.onClick startEditingMessage ] [ Html.text user ]
     in
         Html.div
         [
