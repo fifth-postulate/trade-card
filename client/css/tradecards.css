@@ -90,3 +90,10 @@ h1 { text-align: center; }
     top: var(--collection-card-border-radius);
     left: 10%;
 }
+
+.user {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 3px;
+}
