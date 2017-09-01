@@ -1,8 +1,11 @@
-module TradeCard.User exposing (view)
+module TradeCard.User exposing (User, view)
 
 
 import Html
 import Html.Attributes as Attribute
+
+
+type alias User = String
 
 view : String -> Html.Html msg
 view user =

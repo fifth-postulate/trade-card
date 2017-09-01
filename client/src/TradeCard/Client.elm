@@ -56,7 +56,7 @@ type alias Model =
       localDb : Pouchdb.Pouchdb
     , cardId: String
     , nextEventId: Int
-    , user: String
+    , user: User.User
     , collection: Collection.Collection
     }
 
@@ -121,13 +121,13 @@ update message model =
                             let
                                 id =
                                     case event of
-                                        Collected id _ ->
+                                        Collected user id _ ->
                                             id
 
-                                        Traded id _ ->
+                                        Traded user id _ ->
                                             id
 
-                                        Lost id _ ->
+                                        Lost user id _ ->
                                             id
                             in
                                 max current id
@@ -152,7 +152,7 @@ update message model =
 
         Collect card ->
             let
-                task = (Pouchdb.post model.localDb (encodeEvent (Collected model.nextEventId card)))
+                task = (Pouchdb.post model.localDb (encodeEvent (Collected model.user model.nextEventId card)))
 
                 command = Task.attempt Post task
             in
@@ -168,7 +168,7 @@ update message model =
 
         Trade card ->
             let
-                task = (Pouchdb.post model.localDb (encodeEvent (Traded model.nextEventId card)))
+                task = (Pouchdb.post model.localDb (encodeEvent (Traded model.user model.nextEventId card)))
 
                 command = Task.attempt Post task
 
@@ -182,7 +182,7 @@ update message model =
 
         Remove card ->
             let
-                task = (Pouchdb.post model.localDb (encodeEvent (Lost model.nextEventId card)))
+                task = (Pouchdb.post model.localDb (encodeEvent (Lost model.user model.nextEventId card)))
 
                 command = Task.attempt Post task
 
@@ -198,20 +198,20 @@ update message model =
 encodeEvent : CardEvent -> Encode.Value
 encodeEvent eventType =
     let
-        (eventId, eventTypeRepresentation, cardId) =
+        (user, eventId, eventTypeRepresentation, cardId) =
             case eventType of
-                Collected id card ->
-                    (id, "collected", card.id)
+                Collected user id card ->
+                    (user, id, "collected", card.id)
 
-                Traded id card ->
-                    (id, "traded", card.id)
+                Traded user id card ->
+                    (user, id, "traded", card.id)
 
-                Lost id card ->
-                    (id, "lost", card.id)
+                Lost user id card ->
+                    (user, id, "lost", card.id)
     in
         Encode.object
             [
-              ("_id", Encode.string (zeroPad 15 eventId))
+              ("_id", Encode.string (String.concat [user, ":", (zeroPad 15 eventId)]))
             , ("type", Encode.string eventTypeRepresentation)
             , ("cardId", Encode.int cardId)
             ]
@@ -236,17 +236,28 @@ pad symbol n =
 
 
 type CardEvent =
-      Collected Int Card.Card
-    | Traded Int Card.Card
-    | Lost Int Card.Card
+      Collected User.User Int Card.Card
+    | Traded User.User Int Card.Card
+    | Lost User.User Int Card.Card
 
 
 eventDecoder : Decode.Decoder CardEvent
 eventDecoder =
     let
         cardEventMapper : String -> String -> Int -> CardEvent
-        cardEventMapper eventIdRepresentation eventType cardId =
+        cardEventMapper idRepresentation eventType cardId =
             let
+                (user, eventIdRepresentation) =
+                    let
+                        default = ("", "0")
+                    in
+                        case String.split ":" idRepresentation of
+                            [] -> default
+
+                            [_] -> default
+
+                            user::eventIdRepresentation::_ -> (user, eventIdRepresentation)
+
                 stripped = stripZero eventIdRepresentation
 
                 eventId =
@@ -261,16 +272,16 @@ eventDecoder =
             in
                 case eventType of
                     "collected" ->
-                        Collected eventId card
+                        Collected user eventId card
 
                     "traded" ->
-                        Traded eventId card
+                        Traded user eventId card
 
                     "lost" ->
-                        Lost eventId card
+                        Lost user eventId card
 
                     _ ->
-                        Lost 0 card -- TODO this should be improved
+                        Lost "" 0 card -- TODO this should be improved
 
     in
         Decode.map3
@@ -301,7 +312,7 @@ dropWhile predicate word =
 applyEvent : CardEvent -> Collection.Collection -> Collection.Collection
 applyEvent event collection =
     case event of
-        Collected id card ->
+        Collected user id card ->
             case Collection.collect card collection of
                 Ok nextCollection ->
                     nextCollection
@@ -309,10 +320,10 @@ applyEvent event collection =
                 Err _ ->
                     collection
 
-        Traded id card ->
+        Traded user id card ->
             Collection.remove card collection
 
-        Lost id card ->
+        Lost user id card ->
             Collection.remove card collection
 
 

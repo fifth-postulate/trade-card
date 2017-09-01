@@ -9880,16 +9880,16 @@ var _fifth_postulate$trade_card$TradeCard_Client$applyEvent = F2(
 		var _p2 = event;
 		switch (_p2.ctor) {
 			case 'Collected':
-				var _p3 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, _p2._1, collection);
+				var _p3 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, _p2._2, collection);
 				if (_p3.ctor === 'Ok') {
 					return _p3._0;
 				} else {
 					return collection;
 				}
 			case 'Traded':
-				return A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p2._1, collection);
+				return A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p2._2, collection);
 			default:
-				return A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p2._1, collection);
+				return A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p2._2, collection);
 		}
 	});
 var _fifth_postulate$trade_card$TradeCard_Client$dropWhile = F2(
@@ -9946,16 +9946,17 @@ var _fifth_postulate$trade_card$TradeCard_Client$encodeEvent = function (eventTy
 		var _p6 = eventType;
 		switch (_p6.ctor) {
 			case 'Collected':
-				return {ctor: '_Tuple3', _0: _p6._0, _1: 'collected', _2: _p6._1.id};
+				return {ctor: '_Tuple4', _0: _p6._0, _1: _p6._1, _2: 'collected', _3: _p6._2.id};
 			case 'Traded':
-				return {ctor: '_Tuple3', _0: _p6._0, _1: 'traded', _2: _p6._1.id};
+				return {ctor: '_Tuple4', _0: _p6._0, _1: _p6._1, _2: 'traded', _3: _p6._2.id};
 			default:
-				return {ctor: '_Tuple3', _0: _p6._0, _1: 'lost', _2: _p6._1.id};
+				return {ctor: '_Tuple4', _0: _p6._0, _1: _p6._1, _2: 'lost', _3: _p6._2.id};
 		}
 	}();
-	var eventId = _p5._0;
-	var eventTypeRepresentation = _p5._1;
-	var cardId = _p5._2;
+	var user = _p5._0;
+	var eventId = _p5._1;
+	var eventTypeRepresentation = _p5._2;
+	var cardId = _p5._3;
 	return _elm_lang$core$Json_Encode$object(
 		{
 			ctor: '::',
@@ -9963,7 +9964,20 @@ var _fifth_postulate$trade_card$TradeCard_Client$encodeEvent = function (eventTy
 				ctor: '_Tuple2',
 				_0: '_id',
 				_1: _elm_lang$core$Json_Encode$string(
-					A2(_fifth_postulate$trade_card$TradeCard_Client$zeroPad, 15, eventId))
+					_elm_lang$core$String$concat(
+						{
+							ctor: '::',
+							_0: user,
+							_1: {
+								ctor: '::',
+								_0: ':',
+								_1: {
+									ctor: '::',
+									_0: A2(_fifth_postulate$trade_card$TradeCard_Client$zeroPad, 15, eventId),
+									_1: {ctor: '[]'}
+								}
+							}
+						}))
 			},
 			_1: {
 				ctor: '::',
@@ -10095,41 +10109,56 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 		});
 };
 var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
-var _fifth_postulate$trade_card$TradeCard_Client$Lost = F2(
-	function (a, b) {
-		return {ctor: 'Lost', _0: a, _1: b};
+var _fifth_postulate$trade_card$TradeCard_Client$Lost = F3(
+	function (a, b, c) {
+		return {ctor: 'Lost', _0: a, _1: b, _2: c};
 	});
-var _fifth_postulate$trade_card$TradeCard_Client$Traded = F2(
-	function (a, b) {
-		return {ctor: 'Traded', _0: a, _1: b};
+var _fifth_postulate$trade_card$TradeCard_Client$Traded = F3(
+	function (a, b, c) {
+		return {ctor: 'Traded', _0: a, _1: b, _2: c};
 	});
-var _fifth_postulate$trade_card$TradeCard_Client$Collected = F2(
-	function (a, b) {
-		return {ctor: 'Collected', _0: a, _1: b};
+var _fifth_postulate$trade_card$TradeCard_Client$Collected = F3(
+	function (a, b, c) {
+		return {ctor: 'Collected', _0: a, _1: b, _2: c};
 	});
 var _fifth_postulate$trade_card$TradeCard_Client$eventDecoder = function () {
 	var cardEventMapper = F3(
-		function (eventIdRepresentation, eventType, cardId) {
+		function (idRepresentation, eventType, cardId) {
 			var card = {id: cardId};
+			var _p7 = function () {
+				var $default = {ctor: '_Tuple2', _0: '', _1: '0'};
+				var _p8 = A2(_elm_lang$core$String$split, ':', idRepresentation);
+				if (_p8.ctor === '[]') {
+					return $default;
+				} else {
+					if (_p8._1.ctor === '[]') {
+						return $default;
+					} else {
+						return {ctor: '_Tuple2', _0: _p8._0, _1: _p8._1._0};
+					}
+				}
+			}();
+			var user = _p7._0;
+			var eventIdRepresentation = _p7._1;
 			var stripped = _fifth_postulate$trade_card$TradeCard_Client$stripZero(eventIdRepresentation);
 			var eventId = function () {
-				var _p7 = _elm_lang$core$String$toInt(stripped);
-				if (_p7.ctor === 'Ok') {
-					return _p7._0;
+				var _p9 = _elm_lang$core$String$toInt(stripped);
+				if (_p9.ctor === 'Ok') {
+					return _p9._0;
 				} else {
 					return 0;
 				}
 			}();
-			var _p8 = eventType;
-			switch (_p8) {
+			var _p10 = eventType;
+			switch (_p10) {
 				case 'collected':
-					return A2(_fifth_postulate$trade_card$TradeCard_Client$Collected, eventId, card);
+					return A3(_fifth_postulate$trade_card$TradeCard_Client$Collected, user, eventId, card);
 				case 'traded':
-					return A2(_fifth_postulate$trade_card$TradeCard_Client$Traded, eventId, card);
+					return A3(_fifth_postulate$trade_card$TradeCard_Client$Traded, user, eventId, card);
 				case 'lost':
-					return A2(_fifth_postulate$trade_card$TradeCard_Client$Lost, eventId, card);
+					return A3(_fifth_postulate$trade_card$TradeCard_Client$Lost, user, eventId, card);
 				default:
-					return A2(_fifth_postulate$trade_card$TradeCard_Client$Lost, 0, card);
+					return A3(_fifth_postulate$trade_card$TradeCard_Client$Lost, '', 0, card);
 			}
 		});
 	return A4(
@@ -10141,8 +10170,8 @@ var _fifth_postulate$trade_card$TradeCard_Client$eventDecoder = function () {
 }();
 var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 	function (message, model) {
-		var _p9 = message;
-		switch (_p9.ctor) {
+		var _p11 = message;
+		switch (_p11.ctor) {
 			case 'DoNothing':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'Post':
@@ -10154,7 +10183,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 					function (m) {
 						return A2(_elm_lang$core$String$append, 'saved message with revision: ', m.rev);
 					},
-					_p9._0);
+					_p11._0);
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'History':
 				var onSuccess = F2(
@@ -10162,23 +10191,23 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 						var maxId = F2(
 							function (event, current) {
 								var id = function () {
-									var _p10 = event;
-									switch (_p10.ctor) {
+									var _p12 = event;
+									switch (_p12.ctor) {
 										case 'Collected':
-											return _p10._0;
+											return _p12._1;
 										case 'Traded':
-											return _p10._0;
+											return _p12._1;
 										default:
-											return _p10._0;
+											return _p12._1;
 									}
 								}();
 								return A2(_elm_lang$core$Basics$max, current, id);
 							});
 						var filterMapFun = function (aDoc) {
-							var _p11 = aDoc.doc;
-							if (_p11.ctor === 'Just') {
+							var _p13 = aDoc.doc;
+							if (_p13.ctor === 'Just') {
 								return _elm_lang$core$Result$toMaybe(
-									A2(_elm_lang$core$Json_Decode$decodeValue, _fifth_postulate$trade_card$TradeCard_Client$eventDecoder, _p11._0));
+									A2(_elm_lang$core$Json_Decode$decodeValue, _fifth_postulate$trade_card$TradeCard_Client$eventDecoder, _p13._0));
 							} else {
 								return _elm_lang$core$Maybe$Nothing;
 							}
@@ -10203,43 +10232,43 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 					_fifth_postulate$trade_card$TradeCard_Client$unpack,
 					onError(model),
 					onSuccess(model),
-					_p9._0);
+					_p11._0);
 			case 'UpdateCardId':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{cardId: _p9._0}),
+						{cardId: _p11._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Collect':
-				var _p13 = _p9._0;
+				var _p15 = _p11._0;
 				var task = A2(
 					_powet$elm_pouchdb$Pouchdb$post,
 					model.localDb,
 					_fifth_postulate$trade_card$TradeCard_Client$encodeEvent(
-						A2(_fifth_postulate$trade_card$TradeCard_Client$Collected, model.nextEventId, _p13)));
+						A3(_fifth_postulate$trade_card$TradeCard_Client$Collected, model.user, model.nextEventId, _p15)));
 				var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$Post, task);
-				var _p12 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, _p13, model.collection);
-				if (_p12.ctor === 'Ok') {
+				var _p14 = A2(_fifth_postulate$trade_card$TradeCard_Collection$collect, _p15, model.collection);
+				if (_p14.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{collection: _p12._0, nextEventId: model.nextEventId + 1, cardId: ''}),
+							{collection: _p14._0, nextEventId: model.nextEventId + 1, cardId: ''}),
 						_1: command
 					};
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'Trade':
-				var _p14 = _p9._0;
-				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p14, model.collection);
+				var _p16 = _p11._0;
+				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p16, model.collection);
 				var task = A2(
 					_powet$elm_pouchdb$Pouchdb$post,
 					model.localDb,
 					_fifth_postulate$trade_card$TradeCard_Client$encodeEvent(
-						A2(_fifth_postulate$trade_card$TradeCard_Client$Traded, model.nextEventId, _p14)));
+						A3(_fifth_postulate$trade_card$TradeCard_Client$Traded, model.user, model.nextEventId, _p16)));
 				var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$Post, task);
 				return {
 					ctor: '_Tuple2',
@@ -10249,13 +10278,13 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 					_1: command
 				};
 			default:
-				var _p15 = _p9._0;
-				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p15, model.collection);
+				var _p17 = _p11._0;
+				var nextCollection = A2(_fifth_postulate$trade_card$TradeCard_Collection$remove, _p17, model.collection);
 				var task = A2(
 					_powet$elm_pouchdb$Pouchdb$post,
 					model.localDb,
 					_fifth_postulate$trade_card$TradeCard_Client$encodeEvent(
-						A2(_fifth_postulate$trade_card$TradeCard_Client$Lost, model.nextEventId, _p15)));
+						A3(_fifth_postulate$trade_card$TradeCard_Client$Lost, model.user, model.nextEventId, _p17)));
 				var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$Post, task);
 				return {
 					ctor: '_Tuple2',
