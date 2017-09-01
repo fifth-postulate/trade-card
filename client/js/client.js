@@ -9021,6 +9021,33 @@ var _fifth_postulate$trade_card$TradeCard_View$collectionView = F6(
 			});
 	});
 
+var _fifth_postulate$trade_card$TradeCard_User$view = function (user) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$classList(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'user', _1: true},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$span,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(user),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		});
+};
+
 // PouchDB 5.4.4
 // 
 // (c) 2012-2016 Dale Harvey and the PouchDB team
@@ -10027,26 +10054,39 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 					_0: _elm_lang$html$Html_Attributes$class('collector'),
 					_1: {ctor: '[]'}
 				},
-				{
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$input,
-						{
+				_elm_lang$core$List$concat(
+					{
+						ctor: '::',
+						_0: {
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$type_('input'),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$value(model.cardId),
-								_1: {
+							_0: A2(
+								_elm_lang$html$Html$input,
+								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onInput(_fifth_postulate$trade_card$TradeCard_Client$UpdateCardId),
-									_1: {ctor: '[]'}
-								}
-							}
+									_0: _elm_lang$html$Html_Attributes$type_('input'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$value(model.cardId),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onInput(_fifth_postulate$trade_card$TradeCard_Client$UpdateCardId),
+											_1: {ctor: '[]'}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
 						},
-						{ctor: '[]'}),
-					_1: {ctor: '[]'}
-				}),
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '::',
+								_0: _fifth_postulate$trade_card$TradeCard_User$view(model.user),
+								_1: {ctor: '[]'}
+							},
+							_1: {ctor: '[]'}
+						}
+					})),
 			_1: {
 				ctor: '::',
 				_0: A6(_fifth_postulate$trade_card$TradeCard_View$collectionView, model.cardId, collect, lose, trade, collect, model.collection),

@@ -6,7 +6,7 @@ import Html.Events as Event
 import TradeCard.Card as Card
 import TradeCard.Collection as Collection
 import TradeCard.View as View
-
+import TradeCard.User as User
 
 import Pouchdb
 import Json.Encode as Encode
@@ -342,14 +342,18 @@ view model =
             [
               Html.div
                   [ Attribute.class "collector"]
+                  (List.concat
                   [
-                    Html.input
-                       [
-                         Attribute.type_ "input"
-                       , Attribute.value model.cardId
-                       , Event.onInput UpdateCardId
-                       ] []
-                  ]
+                    [
+                     Html.input
+                         [
+                           Attribute.type_ "input"
+                         , Attribute.value model.cardId
+                         , Event.onInput UpdateCardId
+                         ] []
+                    ]
+                  , [ User.view model.user ]
+                  ])
             , View.collectionView model.cardId collect lose trade collect model.collection
             ]
 
