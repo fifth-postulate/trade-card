@@ -198,7 +198,7 @@ update message model =
 encodeEvent : CardEvent -> Encode.Value
 encodeEvent eventType =
     let
-        (eventId, cardType, cardId) =
+        (eventId, eventTypeRepresentation, cardId) =
             case eventType of
                 Collected id card ->
                     (id, "collected", card.id)
@@ -212,7 +212,7 @@ encodeEvent eventType =
         Encode.object
             [
               ("_id", Encode.string (zeroPad 15 eventId))
-            , ("type", Encode.string cardType)
+            , ("type", Encode.string eventTypeRepresentation)
             , ("cardId", Encode.int cardId)
             ]
 

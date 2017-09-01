@@ -9954,7 +9954,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$encodeEvent = function (eventTy
 		}
 	}();
 	var eventId = _p5._0;
-	var cardType = _p5._1;
+	var eventTypeRepresentation = _p5._1;
 	var cardId = _p5._2;
 	return _elm_lang$core$Json_Encode$object(
 		{
@@ -9970,7 +9970,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$encodeEvent = function (eventTy
 				_0: {
 					ctor: '_Tuple2',
 					_0: 'type',
-					_1: _elm_lang$core$Json_Encode$string(cardType)
+					_1: _elm_lang$core$Json_Encode$string(eventTypeRepresentation)
 				},
 				_1: {
 					ctor: '::',
