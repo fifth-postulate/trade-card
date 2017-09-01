@@ -363,7 +363,7 @@ view model =
                          , Event.onInput UpdateCardId
                          ] []
                     ]
-                  , [ User.view model.user ]
+                  , [ User.view False model.user ]
                   ])
             , View.collectionView model.cardId collect lose trade collect model.collection
             ]
