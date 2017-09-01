@@ -9957,22 +9957,23 @@ var _fifth_postulate$trade_card$TradeCard_Client$encodeEvent = function (eventTy
 			}
 		});
 };
-var _fifth_postulate$trade_card$TradeCard_Client$emptyModel = F3(
-	function (localDb, low, high) {
+var _fifth_postulate$trade_card$TradeCard_Client$emptyModel = F4(
+	function (localDb, low, high, user) {
 		return {
 			localDb: localDb,
 			cardId: '',
 			nextEventId: 1,
+			user: user,
 			collection: A2(_fifth_postulate$trade_card$TradeCard_Collection$empty, low, high)
 		};
 	});
-var _fifth_postulate$trade_card$TradeCard_Client$Flags = F2(
-	function (a, b) {
-		return {lowestCard: a, highestCard: b};
+var _fifth_postulate$trade_card$TradeCard_Client$Flags = F3(
+	function (a, b, c) {
+		return {lowestCard: a, highestCard: b, user: c};
 	});
-var _fifth_postulate$trade_card$TradeCard_Client$Model = F4(
-	function (a, b, c, d) {
-		return {localDb: a, cardId: b, nextEventId: c, collection: d};
+var _fifth_postulate$trade_card$TradeCard_Client$Model = F5(
+	function (a, b, c, d, e) {
+		return {localDb: a, cardId: b, nextEventId: c, user: d, collection: e};
 	});
 var _fifth_postulate$trade_card$TradeCard_Client$History = function (a) {
 	return {ctor: 'History', _0: a};
@@ -9984,7 +9985,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$init = function (flags) {
 	var command = A2(_elm_lang$core$Task$attempt, _fifth_postulate$trade_card$TradeCard_Client$History, task);
 	return {
 		ctor: '_Tuple2',
-		_0: A3(_fifth_postulate$trade_card$TradeCard_Client$emptyModel, localDb, flags.lowestCard, flags.highestCard),
+		_0: A4(_fifth_postulate$trade_card$TradeCard_Client$emptyModel, localDb, flags.lowestCard, flags.highestCard, flags.user),
 		_1: command
 	};
 };
@@ -10233,8 +10234,13 @@ var _fifth_postulate$trade_card$TradeCard_Client$main = _elm_lang$html$Html$prog
 			return A2(
 				_elm_lang$core$Json_Decode$andThen,
 				function (lowestCard) {
-					return _elm_lang$core$Json_Decode$succeed(
-						{highestCard: highestCard, lowestCard: lowestCard});
+					return A2(
+						_elm_lang$core$Json_Decode$andThen,
+						function (user) {
+							return _elm_lang$core$Json_Decode$succeed(
+								{highestCard: highestCard, lowestCard: lowestCard, user: user});
+						},
+						A2(_elm_lang$core$Json_Decode$field, 'user', _elm_lang$core$Json_Decode$string));
 				},
 				A2(_elm_lang$core$Json_Decode$field, 'lowestCard', _elm_lang$core$Json_Decode$int));
 		},

@@ -40,13 +40,14 @@ init flags =
 
         command = Task.attempt History task
     in
-        (emptyModel localDb flags.lowestCard flags.highestCard, command)
+        (emptyModel localDb flags.lowestCard flags.highestCard flags.user, command)
 
 
 type alias Flags =
     {
       lowestCard: Int
     , highestCard: Int
+    , user: String
     }
 
 
@@ -55,16 +56,18 @@ type alias Model =
       localDb : Pouchdb.Pouchdb
     , cardId: String
     , nextEventId: Int
+    , user: String
     , collection: Collection.Collection
     }
 
 
-emptyModel : Pouchdb.Pouchdb -> Int -> Int -> Model
-emptyModel localDb low high =
+emptyModel : Pouchdb.Pouchdb -> Int -> Int -> String -> Model
+emptyModel localDb low high user =
     {
       localDb = localDb
     , cardId = ""
     , nextEventId = 1
+    , user = user
     , collection = Collection.empty low high
     }
 
