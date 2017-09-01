@@ -10064,11 +10064,13 @@ var _fifth_postulate$trade_card$TradeCard_Client$Trade = function (a) {
 var _fifth_postulate$trade_card$TradeCard_Client$Collect = function (a) {
 	return {ctor: 'Collect', _0: a};
 };
+var _fifth_postulate$trade_card$TradeCard_Client$ChangeUser = function (a) {
+	return {ctor: 'ChangeUser', _0: a};
+};
 var _fifth_postulate$trade_card$TradeCard_Client$ToggleEditUser = {ctor: 'ToggleEditUser'};
 var _fifth_postulate$trade_card$TradeCard_Client$UpdateCardId = function (a) {
 	return {ctor: 'UpdateCardId', _0: a};
 };
-var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
 var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 	var lose = _elm_lang$core$Maybe$Just(
 		function (c) {
@@ -10119,15 +10121,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 							ctor: '::',
 							_0: {
 								ctor: '::',
-								_0: A5(
-									_fifth_postulate$trade_card$TradeCard_User$view,
-									model.changingUser,
-									_fifth_postulate$trade_card$TradeCard_Client$ToggleEditUser,
-									function (c) {
-										return _fifth_postulate$trade_card$TradeCard_Client$DoNothing;
-									},
-									_fifth_postulate$trade_card$TradeCard_Client$ToggleEditUser,
-									model.user),
+								_0: A5(_fifth_postulate$trade_card$TradeCard_User$view, model.changingUser, _fifth_postulate$trade_card$TradeCard_Client$ToggleEditUser, _fifth_postulate$trade_card$TradeCard_Client$ChangeUser, _fifth_postulate$trade_card$TradeCard_Client$ToggleEditUser, model.user),
 								_1: {ctor: '[]'}
 							},
 							_1: {ctor: '[]'}
@@ -10140,6 +10134,7 @@ var _fifth_postulate$trade_card$TradeCard_Client$view = function (model) {
 			}
 		});
 };
+var _fifth_postulate$trade_card$TradeCard_Client$DoNothing = {ctor: 'DoNothing'};
 var _fifth_postulate$trade_card$TradeCard_Client$Lost = F3(
 	function (a, b, c) {
 		return {ctor: 'Lost', _0: a, _1: b, _2: c};
@@ -10278,6 +10273,14 @@ var _fifth_postulate$trade_card$TradeCard_Client$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{changingUser: !model.changingUser}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ChangeUser':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{user: _p11._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Collect':

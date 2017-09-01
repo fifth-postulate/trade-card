@@ -78,6 +78,7 @@ type Message =
       DoNothing
     | UpdateCardId String
     | ToggleEditUser
+    | ChangeUser User.User
     | Collect Card.Card
     | Trade Card.Card
     | Remove Card.Card
@@ -155,6 +156,9 @@ update message model =
 
         ToggleEditUser ->
             ({ model | changingUser = not model.changingUser }, Cmd.none)
+
+        ChangeUser user ->
+            ({ model | user = user }, Cmd.none)
 
         Collect card ->
             let
@@ -369,7 +373,7 @@ view model =
                          , Event.onInput UpdateCardId
                          ] []
                     ]
-                  , [ User.view model.changingUser ToggleEditUser (\c -> DoNothing) ToggleEditUser model.user ]
+                  , [ User.view model.changingUser ToggleEditUser ChangeUser ToggleEditUser model.user ]
                   ])
             , View.collectionView model.cardId collect lose trade collect model.collection
             ]
