@@ -10,6 +10,7 @@ command
 elm make src/TradeCard/Client.elm --output js/client.js 
 ```
 
-This will update `client.js` with the latest developments.
+This will update `client.js` with the latest developments. To see the trade card
+app in action open `index.html` in your browser. 
 
 [elm]: http://elm-lang.org/
